@@ -139,18 +139,20 @@ export default class PostsController {
     })
 
     const fs = require('fs');
-    const orderPrKey = __dirname + '/orderPrKey.pem';
+    const orderPrKey = __dirname + '../../../pem/orderPrKey.pem';
 
-    const cancelAllOrderPrKey = __dirname + '/cancelAllOrderPrKey.pem';
+    const cancelAllOrderPrKey = __dirname + '../../../pem/cancelAllOrderPrKey.pem';
 
-    let  PR_KEY_ORDER = fs.readFileSync(orderPrKey,  "utf8" );
-    let  PR_KEY_CANCEL_ORDER = fs.readFileSync(cancelAllOrderPrKey,  "utf8" );
+    let  PR_KEY_ORDER = "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgRlOk122yZUclC2dr\nxqYV7c2npZj+2tvxwprCNkRWKlKhRANCAAQy3Cn0h7BEsflowwy4tz3qex6Jfxlb\nH/xNMqPrjsa3PrFKoWWzymKkl9xr+ceECflRVVd918V+HaSPhLCUdnT0\n-----END PRIVATE KEY-----";
+    let  PR_KEY_CANCEL_ORDER = "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgUEujiWQ5uNpernfe\n1B0cc66hnF4W3IyGndgz8UocJnuhRANCAARZC/LjUwb5jwAPxWBxLKBhcF7E2uvW\n/pOyWBu0IX0IVPtyH9EUIqkgvtDKQGdFxbEoMMX1fzrVfYmzQKDpL6PX\n-----END PRIVATE KEY-----";
 
-    const orderPbKey = __dirname + '/orderPbKey.pem';
-    const cancelAllOrderPbKey = __dirname + '/cancelAllOrderPbKey.pem';
+    const orderPbKey = __dirname + '../../../pem/orderPbKey.pem';
+    const cancelAllOrderPbKey = __dirname + '../../../pem/cancelAllOrderPbKey.pem';
 
-    let  PB_KEY_ORDER = fs.readFileSync(orderPbKey,  "utf8" );
-    let  PB_KEY_CANCEL_ORDER = fs.readFileSync(cancelAllOrderPbKey,  "utf8" );
+    let  API_KEY_TRADE = '3f4cb8f1-aa2f-48aa-bba6-dc50a370cfcf'
+    let  PB_KEY_ORDER = 'ae45a8fc-d7fa-4e7c-acde-74a35f54e751';
+    let  PB_KEY_ADD_ORDER = 'bb379fb9-8d64-4414-9387-edeaec1ad067';
+    let  PB_KEY_CANCEL_ORDER = '5a71182e-f4b7-46bd-8b02-4b523e775a23';
     const crypto = require("crypto");
     const endpoint_cancel_all_orders = '/private/cancel_all_orders';
     const endpoint_order = '/private/cancel_all_orders';

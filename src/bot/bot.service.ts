@@ -73,25 +73,25 @@ export class BotService implements OnModuleInit {
 
 
           const fs = require('fs');
-          const fileKey = __dirname + '/private.pem';
+          // const fileKey = __dirname + '/private.pem';
           const orderPrKey = __dirname + '/orderPrKey.pem';
           const addOrderPrKey = __dirname + '/addOrderPrKey.pem';
           const cancelAllOrderPrKey = __dirname + '/cancelAllOrderPrKey.pem';
 
-          let  KEY_TDEADE = fs.readFileSync(fileKey,  "utf8" );
-          let  PR_KEY_ORDER = fs.readFileSync(orderPrKey,  "utf8" );
-          let  PR_KEY_ADD_ORDER = fs.readFileSync(addOrderPrKey,  "utf8" );
-          let  PR_KEY_CANCEL_ORDER = fs.readFileSync(cancelAllOrderPrKey,  "utf8" );
+          let  KEY_TDEADE = "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgbhZPblby4fbFQETU\nkBZCXndUD5jDVi5EitmzLWrwfxuhRANCAASqoelOmrbPRneq5O1lcj6BalLiDpq4\nUfWX5BrxhSC5e4KqknQG2ii21oSSKrdAwVhkutKWPNdaQvOfXuWs+Ih9\n-----END PRIVATE KEY-----";
+          let  PR_KEY_ORDER ="-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgRlOk122yZUclC2dr\nxqYV7c2npZj+2tvxwprCNkRWKlKhRANCAAQy3Cn0h7BEsflowwy4tz3qex6Jfxlb\nH/xNMqPrjsa3PrFKoWWzymKkl9xr+ceECflRVVd918V+HaSPhLCUdnT0\n-----END PRIVATE KEY-----";
+          let  PR_KEY_ADD_ORDER = "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgNBWsoxQPHZOguIMR\nmPF7+SY60sd8yPBG6jaxAF+1WMihRANCAATy8CH2yMQG3TdbYwlLUnPtCv5qI8sN\nqD9AWdPuCHqih+Mdjxe8GNRb4yjS3sff5FYSVx9Ws+QP8ugjZJtKdGu9\n-----END PRIVATE KEY-----";
+          let  PR_KEY_CANCEL_ORDER = "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgUEujiWQ5uNpernfe\n1B0cc66hnF4W3IyGndgz8UocJnuhRANCAARZC/LjUwb5jwAPxWBxLKBhcF7E2uvW\n/pOyWBu0IX0IVPtyH9EUIqkgvtDKQGdFxbEoMMX1fzrVfYmzQKDpL6PX\n-----END PRIVATE KEY-----";
 
           const afileKey = __dirname + '/public.pem';
           const orderPbKey = __dirname + '/orderPbKey.pem';
           const addOrderPbKey = __dirname + '/addOrderPbKey.pem';
           const cancelAllOrderPbKey = __dirname + '/cancelAllOrderPbKey.pem';
 
-          let  API_KEY_TRADE = fs.readFileSync(afileKey,  "utf8" );
-          let  PB_KEY_ORDER = fs.readFileSync(orderPbKey,  "utf8" );
-          let  PB_KEY_ADD_ORDER = fs.readFileSync(addOrderPbKey,  "utf8" );
-          let  PB_KEY_CANCEL_ORDER = fs.readFileSync(cancelAllOrderPbKey,  "utf8" );
+          let  API_KEY_TRADE = '3f4cb8f1-aa2f-48aa-bba6-dc50a370cfcf'
+          let  PB_KEY_ORDER = 'ae45a8fc-d7fa-4e7c-acde-74a35f54e751';
+          let  PB_KEY_ADD_ORDER = 'bb379fb9-8d64-4414-9387-edeaec1ad067';
+          let  PB_KEY_CANCEL_ORDER = '5a71182e-f4b7-46bd-8b02-4b523e775a23';
 
           // console.log(KEY_TDEADE);
           // console.log(API_KEY_TRADE);
@@ -126,7 +126,8 @@ export class BotService implements OnModuleInit {
             },
             body: urlEncodedParams, // Parameters in body of the request
           });
-          // console.log(responses);
+          const tjson = await responses.json();
+          console.log(tjson);
           // Done!
 
           //---------------------------------------------------------------------------------------------------------------GET ORDERS
