@@ -10,11 +10,12 @@ exports.BotModule = void 0;
 const common_1 = require("@nestjs/common");
 const bot_service_1 = require("./bot.service");
 const config_1 = require("@nestjs/config");
+const posts_module_1 = require("../posts/posts.module");
 let BotModule = class BotModule {
 };
 BotModule = __decorate([
     common_1.Module({
-        imports: [config_1.ConfigModule],
+        imports: [config_1.ConfigModule, posts_module_1.PostsModule],
         controllers: [],
         providers: [bot_service_1.BotService],
     })

@@ -22,12 +22,10 @@ let PostsService = class PostsService {
         this.postsRepository = postsRepository;
     }
     getAllPosts() {
-        return this.postsRepository.find({ relations: ["author"] });
+        return this.postsRepository.find();
     }
     async getPostById(id) {
-        const post = await this.postsRepository.findOne(id, {
-            relations: ["author"],
-        });
+        const post = await this.postsRepository.findOne(id);
         if (post) {
             return post;
         }

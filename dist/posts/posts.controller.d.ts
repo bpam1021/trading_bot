@@ -13,6 +13,6 @@ export default class PostsController {
     setAsk(askdata: UpdateSetAskParamDto): Promise<import("./post.entity").default>;
     setStartandStop(startdata: UpdateSetStartParamDto): Promise<import("./post.entity").default>;
     getEnableCurrencies(): Promise<any>;
-    cancelallorders(): Promise<boolean>;
+    cancelallorders(): Promise<void>;
     getEnableOrders(): Promise<any>;
 }

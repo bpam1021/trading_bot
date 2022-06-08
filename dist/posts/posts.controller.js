@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
 const axios = require('axios').default;
+const node_fetch_1 = require("node-fetch");
 const posts_service_1 = require("./posts.service");
 const updateSetAskParam_dto_1 = require("./dto/updateSetAskParam.dto");
 const updateSetBidParam_dto_1 = require("./dto/updateSetBidParam.dto");
@@ -57,36 +58,121 @@ let PostsController = class PostsController {
         return response.data;
     }
     async cancelallorders() {
-        return true;
+        let response;
+        try {
+            response = await axios.get('https://limitlex.com/api/public/currencies');
+        }
+        catch (error) {
+            console.log('[ERROR][MEMBER][FETCH]: ', error);
+        }
+        let fromid, toid;
+        let cryptodata = response.data.result.data;
+        cryptodata.map((item, index) => {
+            if (item.code == "USDT")
+                fromid = item.id;
+            if (item.code == "XRP")
+                toid = item.id;
+        });
+        try {
+            response = await axios.get('https://limitlex.com/api/public/pairs');
+        }
+        catch (error) {
+            console.log('[ERROR][MEMBER][FETCH]: ', error);
+        }
+        let pairdata = response.data.result.data;
+        let pair_id = "";
+        pairdata.map((item, index) => {
+            if ((item.currency_id_1 == fromid && item.currency_id_2 == toid) || (item.currency_id_1 == toid && item.currency_id_2 == fromid))
+                pair_id = item.id;
+        });
+        const fs = require('fs');
+        const orderPrKey = __dirname + '/orderPrKey.pem';
+        const cancelAllOrderPrKey = __dirname + '/cancelAllOrderPrKey.pem';
+        let PR_KEY_ORDER = fs.readFileSync(orderPrKey, "utf8");
+        let PR_KEY_CANCEL_ORDER = fs.readFileSync(cancelAllOrderPrKey, "utf8");
+        const orderPbKey = __dirname + '/orderPbKey.pem';
+        const cancelAllOrderPbKey = __dirname + '/cancelAllOrderPbKey.pem';
+        let PB_KEY_ORDER = fs.readFileSync(orderPbKey, "utf8");
+        let PB_KEY_CANCEL_ORDER = fs.readFileSync(cancelAllOrderPbKey, "utf8");
+        const crypto = require("crypto");
+        const endpoint_cancel_all_orders = '/private/cancel_all_orders';
+        const endpoint_order = '/private/cancel_all_orders';
+        const params_order = {
+            nonce: Date.now().toString(),
+            pair_id: pair_id,
+        };
+        const params_cancel_all_orders = {
+            nonce: Date.now().toString(),
+            pair_id: pair_id,
+        };
+        const cAOurlEncodedParams = new URLSearchParams(params_cancel_all_orders).toString();
+        const cAOmessageToSign = endpoint_cancel_all_orders + cAOurlEncodedParams;
+        const cAOsignature = crypto.sign("sha512", Buffer.from(cAOmessageToSign), PR_KEY_CANCEL_ORDER);
+        const cAOresponses = await node_fetch_1.default('https://limitlex.com/api' + endpoint_cancel_all_orders, {
+            method: 'POST',
+            headers: {
+                'API-Key': PB_KEY_CANCEL_ORDER,
+                'API-Sign': cAOsignature.toString('base64'),
+            },
+            body: cAOurlEncodedParams,
+        });
     }
     async getEnableOrders() {
-        let API_KEY = "d248b83e-00b6-42c8-aef5-c1fb6a8deef4";
-        let Private_Key = `-----BEGIN PRIVATE KEY-----
-    MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQggroaxL9bfLZNMzSQ
-    j1YCH2deNneNdYgCyGvZYZmlNfmhRANCAAQa63I59jtSCkH5lFaAdLGrrss2I22M
-    IDqb2as76C0yUYXbDtcUG9HLu/sFqaxp7xTgpNFWjroYgWZcVFD5OFu0
-    -----END PRIVATE KEY-----`;
-        let ellipticcurve = require("starkbank-ecdsa");
-        let Ecdsa = ellipticcurve.Ecdsa;
-        let PrivateKey = ellipticcurve.PrivateKey;
-        let privateKey = PrivateKey.fromPem(Private_Key);
-        const endpoint = '/private/open_orders';
-        const params = {
-            nonce: Date.now().toString(),
-            pair_id: 'ab651a43-1fc9-4163-a31b-74e5f537e82f:bfd04d06-b97c-4287-8bb0-c18f2eb19157',
-        };
-        const urlEncodedParams = new URLSearchParams(params).toString();
-        const messageToSign = endpoint + urlEncodedParams;
-        let signature = Ecdsa.sign(messageToSign, privateKey);
-        let response = await axios.post('https://limitlex.com/api' + endpoint, {
-            headers: {
-                'API-Key': API_KEY,
-                'API-Sign': signature.toString('base64'),
-            },
-            body: urlEncodedParams,
+        let response;
+        try {
+            response = await axios.get('https://limitlex.com/api/public/currencies');
+        }
+        catch (error) {
+            console.log('[ERROR][MEMBER][FETCH]: ', error);
+        }
+        let fromid, toid;
+        let cryptodata = response.data.result.data;
+        cryptodata.map((item, index) => {
+            if (item.code == "USDT")
+                fromid = item.id;
+            if (item.code == "XRP")
+                toid = item.id;
         });
-        console.log(response);
-        return response;
+        try {
+            response = await axios.get('https://limitlex.com/api/public/pairs');
+        }
+        catch (error) {
+            console.log('[ERROR][MEMBER][FETCH]: ', error);
+        }
+        let pairdata = response.data.result.data;
+        let pair_id = "";
+        pairdata.map((item, index) => {
+            if ((item.currency_id_1 == fromid && item.currency_id_2 == toid) || (item.currency_id_1 == toid && item.currency_id_2 == fromid))
+                pair_id = item.id;
+        });
+        const fs = require('fs');
+        const orderPrKey = __dirname + '/orderPrKey.pem';
+        const cancelAllOrderPrKey = __dirname + '/cancelAllOrderPrKey.pem';
+        let PR_KEY_ORDER = fs.readFileSync(orderPrKey, "utf8");
+        let PR_KEY_CANCEL_ORDER = fs.readFileSync(cancelAllOrderPrKey, "utf8");
+        const orderPbKey = __dirname + '/orderPbKey.pem';
+        const cancelAllOrderPbKey = __dirname + '/cancelAllOrderPbKey.pem';
+        let PB_KEY_ORDER = fs.readFileSync(orderPbKey, "utf8");
+        let PB_KEY_CANCEL_ORDER = fs.readFileSync(cancelAllOrderPbKey, "utf8");
+        const crypto = require("crypto");
+        const endpoint_order = '/private/open_orders';
+        const params_order = {
+            nonce: Date.now().toString(),
+            pair_id: pair_id,
+        };
+        const orderUrlEncodedParams = new URLSearchParams(params_order).toString();
+        const orderMessageToSign = endpoint_order + orderUrlEncodedParams;
+        const orderSignature = crypto.sign("sha512", Buffer.from(orderMessageToSign), PR_KEY_ORDER);
+        const orderResponses = await node_fetch_1.default('https://limitlex.com/api' + endpoint_order, {
+            method: 'POST',
+            headers: {
+                'API-Key': PB_KEY_ORDER,
+                'API-Sign': orderSignature.toString('base64'),
+            },
+            body: orderUrlEncodedParams,
+        });
+        const orderJson = await orderResponses.json();
+        return orderJson;
     }
 };
 __decorate([

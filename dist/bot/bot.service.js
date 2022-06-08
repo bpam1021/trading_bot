@@ -12,87 +12,196 @@ var BotService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BotService = void 0;
 const common_1 = require("@nestjs/common");
-const config_1 = require("@nestjs/config");
 const node_fetch_1 = require("node-fetch");
+const config_1 = require("@nestjs/config");
+const posts_service_1 = require("../posts/posts.service");
 const axios = require('axios').default;
 let BotService = BotService_1 = class BotService {
-    constructor(configService) {
+    constructor(configService, postsService) {
         this.configService = configService;
+        this.postsService = postsService;
         this.logger = new common_1.Logger(BotService_1.name);
     }
     onModuleInit() {
         this.logger.log(`Initializing ${BotService_1.name}`);
         this.run();
     }
+    getRandom(min, max) {
+        return Math.random() * (max - min) + min;
+    }
     async run() {
         this.logger.log('Initializing Trade Bot');
         const promBars = new Promise((resolve, reject) => {
             const barChecker = setInterval(async () => {
-                this.logger.log('Trade Bot Time Count');
-                let response;
-                try {
-                    response = await axios.get('https://limitlex.com/api/public/currencies');
+                let tradeparameter = await this.postsService.getPostById(1);
+                if (tradeparameter.startflag == true) {
+                    this.logger.log('Trade Bot Time Count');
+                    let response;
+                    try {
+                        response = await axios.get('https://limitlex.com/api/public/currencies');
+                    }
+                    catch (error) {
+                        console.log('[ERROR][MEMBER][FETCH]: ', error);
+                    }
+                    let fromid, toid;
+                    let cryptodata = response.data.result.data;
+                    cryptodata.map((item, index) => {
+                        if (item.code == "USDT")
+                            fromid = item.id;
+                        if (item.code == "XRP")
+                            toid = item.id;
+                    });
+                    try {
+                        response = await axios.get('https://limitlex.com/api/public/pairs');
+                    }
+                    catch (error) {
+                        console.log('[ERROR][MEMBER][FETCH]: ', error);
+                    }
+                    let pairdata = response.data.result.data;
+                    let pair_id = "";
+                    pairdata.map((item, index) => {
+                        if ((item.currency_id_1 == fromid && item.currency_id_2 == toid) || (item.currency_id_1 == toid && item.currency_id_2 == fromid))
+                            pair_id = item.id;
+                    });
+                    const fs = require('fs');
+                    const fileKey = __dirname + '/private.pem';
+                    const orderPrKey = __dirname + '/orderPrKey.pem';
+                    const addOrderPrKey = __dirname + '/addOrderPrKey.pem';
+                    const cancelAllOrderPrKey = __dirname + '/cancelAllOrderPrKey.pem';
+                    let KEY_TDEADE = fs.readFileSync(fileKey, "utf8");
+                    let PR_KEY_ORDER = fs.readFileSync(orderPrKey, "utf8");
+                    let PR_KEY_ADD_ORDER = fs.readFileSync(addOrderPrKey, "utf8");
+                    let PR_KEY_CANCEL_ORDER = fs.readFileSync(cancelAllOrderPrKey, "utf8");
+                    const afileKey = __dirname + '/public.pem';
+                    const orderPbKey = __dirname + '/orderPbKey.pem';
+                    const addOrderPbKey = __dirname + '/addOrderPbKey.pem';
+                    const cancelAllOrderPbKey = __dirname + '/cancelAllOrderPbKey.pem';
+                    let API_KEY_TRADE = fs.readFileSync(afileKey, "utf8");
+                    let PB_KEY_ORDER = fs.readFileSync(orderPbKey, "utf8");
+                    let PB_KEY_ADD_ORDER = fs.readFileSync(addOrderPbKey, "utf8");
+                    let PB_KEY_CANCEL_ORDER = fs.readFileSync(cancelAllOrderPbKey, "utf8");
+                    const crypto = require("crypto");
+                    const endpoint = '/private/trades';
+                    const endpoint_order = '/private/open_orders';
+                    const endpoint_add_order = '/private/add_order';
+                    const endpoint_cancel_all_orders = '/private/cancel_all_orders';
+                    const params = {
+                        nonce: Date.now().toString(),
+                        pair_id: pair_id,
+                    };
+                    const urlEncodedParams = new URLSearchParams(params).toString();
+                    const messageToSign = endpoint + urlEncodedParams;
+                    const signature = crypto.sign("sha512", Buffer.from(messageToSign), KEY_TDEADE);
+                    const responses = await node_fetch_1.default('https://limitlex.com/api' + endpoint, {
+                        method: 'POST',
+                        headers: {
+                            'API-Key': API_KEY_TRADE,
+                            'API-Sign': signature.toString('base64'),
+                        },
+                        body: urlEncodedParams,
+                    });
+                    const params_order = {
+                        nonce: Date.now().toString(),
+                        pair_id: pair_id,
+                    };
+                    const orderUrlEncodedParams = new URLSearchParams(params_order).toString();
+                    const orderMessageToSign = endpoint_order + orderUrlEncodedParams;
+                    const orderSignature = crypto.sign("sha512", Buffer.from(orderMessageToSign), PR_KEY_ORDER);
+                    const orderResponses = await node_fetch_1.default('https://limitlex.com/api' + endpoint_order, {
+                        method: 'POST',
+                        headers: {
+                            'API-Key': PB_KEY_ORDER,
+                            'API-Sign': orderSignature.toString('base64'),
+                        },
+                        body: orderUrlEncodedParams,
+                    });
+                    const orderJson = await orderResponses.json();
+                    let bids, asks, totalBid, totalAsk;
+                    bids = orderJson.result.data.filter((item, index) => {
+                        if (item.order_direction == "buy") {
+                            return item;
+                        }
+                    });
+                    asks = orderJson.result.data.filter((item, index) => {
+                        if (item.order_direction == "sell") {
+                            return item;
+                        }
+                    });
+                    totalBid = bids.length;
+                    totalAsk = asks.length;
+                    let buy_price, buy_amount_1;
+                    if (totalBid == 0) {
+                        buy_price = tradeparameter.bidprice.toString();
+                        buy_amount_1 = tradeparameter.bidamount.toString();
+                    }
+                    else {
+                        buy_price = (bids[totalBid - 1].price * (1 - this.getRandom(tradeparameter.startbidprogres, tradeparameter.endbidprogress) / 100)).toFixed(4);
+                        buy_amount_1 = this.getRandom(5, tradeparameter.bidamount).toFixed(6);
+                    }
+                    let params_add_bid_order = {
+                        nonce: Date.now().toString(),
+                        pair_id: pair_id,
+                        order_direction: "buy",
+                        order_type: "limit",
+                        price: buy_price,
+                        amount_1: buy_amount_1.toString()
+                    };
+                    let ask_price, ask_amount_1;
+                    if (totalAsk == 0) {
+                        ask_price = tradeparameter.askprice.toString();
+                        ask_amount_1 = tradeparameter.askamount.toString();
+                    }
+                    else {
+                        ask_price = (asks[totalAsk - 1].price * (1 + this.getRandom(tradeparameter.startaskprogres, tradeparameter.endaskprogress) / 100)).toFixed(4);
+                        ask_amount_1 = this.getRandom(5, tradeparameter.askamount).toFixed(6);
+                    }
+                    if (bids.length <= 25) {
+                        const addOrderUrlEncodedParams = new URLSearchParams(params_add_bid_order).toString();
+                        const addOrderMessageToSign = endpoint_add_order + addOrderUrlEncodedParams;
+                        const addOrderSignature = crypto.sign("sha512", Buffer.from(addOrderMessageToSign), PR_KEY_ADD_ORDER);
+                        const addOrderResponses = await node_fetch_1.default('https://limitlex.com/api' + endpoint_add_order, {
+                            method: 'POST',
+                            headers: {
+                                'API-Key': PB_KEY_ADD_ORDER,
+                                'API-Sign': addOrderSignature.toString('base64'),
+                            },
+                            body: addOrderUrlEncodedParams,
+                        });
+                        const addOrderJson = await addOrderResponses.json();
+                        console.log("addOrderJson:", addOrderJson);
+                    }
+                    let params_add_ask_order = {
+                        nonce: Date.now().toString(),
+                        pair_id: pair_id,
+                        order_direction: "sell",
+                        order_type: "limit",
+                        price: ask_price,
+                        amount_1: ask_amount_1
+                    };
+                    if (asks.length <= 25) {
+                        const addAskOrderUrlEncodedParams = new URLSearchParams(params_add_ask_order).toString();
+                        const addAskOrderMessageToSign = endpoint_add_order + addAskOrderUrlEncodedParams;
+                        const addAskOrderSignature = crypto.sign("sha512", Buffer.from(addAskOrderMessageToSign), PR_KEY_ADD_ORDER);
+                        const addAskOrderResponses = await node_fetch_1.default('https://limitlex.com/api' + endpoint_add_order, {
+                            method: 'POST',
+                            headers: {
+                                'API-Key': PB_KEY_ADD_ORDER,
+                                'API-Sign': addAskOrderSignature.toString('base64'),
+                            },
+                            body: addAskOrderUrlEncodedParams,
+                        });
+                        const addAskOrderJson = await addAskOrderResponses.json();
+                        console.log("addAskOrderJson:", addAskOrderJson);
+                    }
                 }
-                catch (error) {
-                    console.log('[ERROR][MEMBER][FETCH]: ', error);
-                }
-                let fromid, toid;
-                let cryptodata = response.data.result.data;
-                cryptodata.map((item, index) => {
-                    if (item.code == "USDT")
-                        fromid = item.id;
-                    if (item.code == "XRP")
-                        toid = item.id;
-                });
-                console.log(fromid);
-                console.log(toid);
-                try {
-                    response = await axios.get('https://limitlex.com/api/public/pairs');
-                }
-                catch (error) {
-                    console.log('[ERROR][MEMBER][FETCH]: ', error);
-                }
-                let pairdata = response.data.result.data;
-                let pair_id = "";
-                this.logger.log(response.data);
-                pairdata.map((item, index) => {
-                    if ((item.currency_id_1 == fromid && item.currency_id_2 == toid) || (item.currency_id_1 == toid && item.currency_id_2 == fromid))
-                        pair_id = item.id;
-                });
-                const fs = require('fs');
-                const fileKey = __dirname + '/private.pem';
-                let API_SECRET = fs.readFileSync(fileKey, "utf8");
-                const afileKey = __dirname + '/public.pem';
-                let API_KEY = fs.readFileSync(afileKey, "utf8");
-                console.log(API_SECRET);
-                console.log(API_KEY);
-                const crypto = require("crypto");
-                const endpoint = '/private/trades';
-                console.log("pair_id   :   ", pair_id);
-                const params = {
-                    nonce: Date.now().toString(),
-                    pair_id: pair_id,
-                };
-                const urlEncodedParams = new URLSearchParams(params).toString();
-                const messageToSign = endpoint + urlEncodedParams;
-                const signature = crypto.sign("sha512", Buffer.from(messageToSign), API_SECRET);
-                const responses = await node_fetch_1.default('https://limitlex.com/api' + endpoint, {
-                    method: 'POST',
-                    headers: {
-                        'API-Key': API_KEY,
-                        'API-Sign': signature.toString('base64'),
-                    },
-                    body: urlEncodedParams,
-                });
-                const json = await responses.json();
-                console.log(json);
             }, 10000);
         });
     }
 };
 BotService = BotService_1 = __decorate([
     common_1.Injectable(),
-    __metadata("design:paramtypes", [config_1.ConfigService])
+    __metadata("design:paramtypes", [config_1.ConfigService,
+        posts_service_1.default])
 ], BotService);
 exports.BotService = BotService;
 //# sourceMappingURL=bot.service.js.map

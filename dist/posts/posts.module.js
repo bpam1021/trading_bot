@@ -19,6 +19,7 @@ PostsModule = __decorate([
         imports: [typeorm_1.TypeOrmModule.forFeature([post_entity_1.default])],
         controllers: [posts_controller_1.default],
         providers: [posts_service_1.default],
+        exports: [posts_service_1.default],
     })
 ], PostsModule);
 exports.PostsModule = PostsModule;

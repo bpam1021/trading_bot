@@ -29,47 +29,47 @@ __decorate([
 ], Post.prototype, "tocurrency", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    typeorm_1.Column(),
+    typeorm_1.Column({ type: "float", default: 10 }),
     __metadata("design:type", Number)
 ], Post.prototype, "bidprice", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    typeorm_1.Column(),
+    typeorm_1.Column({ type: "float", default: 10 }),
     __metadata("design:type", Number)
 ], Post.prototype, "bidamount", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    typeorm_1.Column(),
+    typeorm_1.Column({ type: "float", default: 0.1 }),
     __metadata("design:type", Number)
 ], Post.prototype, "startbidprogres", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    typeorm_1.Column(),
+    typeorm_1.Column({ type: "float", default: 0.2 }),
     __metadata("design:type", Number)
 ], Post.prototype, "endbidprogress", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    typeorm_1.Column(),
+    typeorm_1.Column({ type: "float", default: 10.3 }),
     __metadata("design:type", Number)
 ], Post.prototype, "askprice", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    typeorm_1.Column(),
+    typeorm_1.Column({ type: "float", default: 15 }),
     __metadata("design:type", Number)
 ], Post.prototype, "askamount", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    typeorm_1.Column(),
+    typeorm_1.Column({ type: "float", default: 0.1 }),
     __metadata("design:type", Number)
 ], Post.prototype, "startaskprogres", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    typeorm_1.Column(),
+    typeorm_1.Column({ type: "float", default: 0.2 }),
     __metadata("design:type", Number)
 ], Post.prototype, "endaskprogress", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    typeorm_1.Column(),
+    typeorm_1.Column({ default: 0 }),
     __metadata("design:type", Boolean)
 ], Post.prototype, "startflag", void 0);
 Post = __decorate([
