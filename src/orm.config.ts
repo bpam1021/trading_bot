@@ -1,7 +1,7 @@
 import * as postgresConnectionStringParser from 'pg-connection-string';
 
 const connectionOptions = postgresConnectionStringParser.parse(
-  'postgres://postgres:tlqdldnjfdltlqdlf12.20@localhost:5432/trading_bot',
+  process.env.DATABASE_URL,
 );
 
 // Check typeORM documentation for more information.
