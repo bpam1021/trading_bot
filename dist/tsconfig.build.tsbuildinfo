@@ -4302,8 +4302,8 @@
         "affectsGlobalScope": false
       },
       "../src/posts/posts.service.ts": {
-        "version": "662571053055bbf0ec012b4aa214e42aea92be6074c62cbc698ad9f309fcbd8d",
-        "signature": "2cf2967ca849a2f1347cb32fe87ef4d9a1e51d4a1e28052c4d4f9234683dccf2",
+        "version": "1b6a66ad2264b5d815420b50bc77d65ec70c3a0e897a4f3250c8ed04d253ec09",
+        "signature": "0bd89d3500bf28ba322c73b962f7260034523ad8cd311f546ab9a896a199a126",
         "affectsGlobalScope": false
       },
       "../src/posts/dto/updatesetstartparam.dto.ts": {
@@ -4787,7 +4787,7 @@
         "affectsGlobalScope": false
       },
       "../src/bot/bot.service.ts": {
-        "version": "f6a25ba9a85e98a47bea720ee1896e857c706a1432f248818074b130b32722b5",
+        "version": "f0b9c90235626b349d9c4ee72644e4db06aff14f99f7849ec017067df4be22e8",
         "signature": "f10148ecd86e7fc17257d17fefd5a9d3a746def3c684a0e8bf959af7796e10a6",
         "affectsGlobalScope": false
       },

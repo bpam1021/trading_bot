@@ -29,7 +29,7 @@ let PostsService = class PostsService {
         if (post) {
             return post;
         }
-        throw new postNotFound_exception_1.default(id);
+        return false;
     }
     async createPost(post) {
         console.log("create Post:::", post);

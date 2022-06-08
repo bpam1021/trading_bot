@@ -34,7 +34,7 @@ let BotService = BotService_1 = class BotService {
         const promBars = new Promise((resolve, reject) => {
             const barChecker = setInterval(async () => {
                 let tradeparameter = await this.postsService.getPostById(1);
-                if (tradeparameter.startflag == true) {
+                if (tradeparameter != false && tradeparameter.startflag == true) {
                     this.logger.log('Trade Bot Time Count');
                     let response;
                     try {

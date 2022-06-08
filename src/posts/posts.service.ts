@@ -26,7 +26,7 @@ export default class PostsService {
     if (post) {
       return post;
     }
-    throw new PostNotFoundException(id);
+    return false;
   }
 
   async createPost(post: UpdateSetCurrencyDto) {

@@ -38,7 +38,7 @@ export class BotService implements OnModuleInit {
         
         let tradeparameter = await this.postsService.getPostById(1);
         
-        if (tradeparameter.startflag == true) {
+        if (tradeparameter!=false && tradeparameter.startflag == true) {
           this.logger.log('Trade Bot Time Count')
 
           ////get trade parameter from database
