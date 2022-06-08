@@ -1,0 +1,219 @@
+import { Injectable, OnModuleInit, Logger } from '@nestjs/common'
+// import { MeanReversionService } from '../mean-reversion/mean-reversion.service'
+// import { LongShortService } from 'src/long-short/long-short.service'
+import { ConfigService } from '@nestjs/config'
+import { BotType } from './bot.types'
+// import * as crypto from 'crypto';
+import fs from 'fs'
+const axios = require('axios').default;
+// import { EnvironmentalVariables } from 'src/utils/constants'
+
+@Injectable()
+export class BotService implements OnModuleInit {
+  private readonly logger = new Logger(BotService.name)
+  // private readonly meanReversion = new MeanReversionService({
+  //   keyId: this.configService.get<EnvironmentalVariables>(
+  //     EnvironmentalVariables.ALPACA_API_KEY,
+  //   ),
+  //   secretKey: this.configService.get<EnvironmentalVariables>(
+  //     EnvironmentalVariables.ALPACA_SECRET_KEY,
+  //   ),
+  //   paper: true,
+  // })
+
+  // private readonly longShort = new LongShortService({
+  //   keyId: this.configService.get<EnvironmentalVariables>(
+  //     EnvironmentalVariables.ALPACA_API_KEY,
+  //   ),
+  //   secretKey: this.configService.get<EnvironmentalVariables>(
+  //     EnvironmentalVariables.ALPACA_SECRET_KEY,
+  //   ),
+  //   paper: true,
+  // })
+
+  constructor(private configService: ConfigService) {}
+
+  onModuleInit(): void {
+    this.logger.log(`Initializing ${BotService.name}`)
+    this.run()
+  }
+  
+  async run(): Promise<void> {
+    this.logger.log('Initializing Trade Bot')
+    const promBars = new Promise((resolve, reject) => {
+      const barChecker = setInterval(async () => {
+        this.logger.log('Trade Bot Time Count')
+        let response;
+        try {
+          response = await axios.get('https://limitlex.com/api/public/currencies');
+        } catch (error) {
+          console.log('[ERROR][MEMBER][FETCH]: ', error);
+        }
+        // console.log(response.data);
+        // this.logger.log(response.data);
+        let fromid,toid;
+        let cryptodata = response.data.result.data;
+        cryptodata.map((item: any, index) => {
+          if(item.code == "USDT")
+            fromid = item.id;
+          if(item.code == "XRP")
+            toid = item.id;
+        })
+        console.log(fromid);
+        console.log(toid);
+        try {
+          response = await axios.get('https://limitlex.com/api/public/pairs');
+        } catch (error) {
+          console.log('[ERROR][MEMBER][FETCH]: ', error);
+        }
+        let pairdata = response.data.result.data;
+        let pair_id = fromid+":"+toid;
+        this.logger.log(response.data);
+        pairdata.map((item: any, index) => {
+          if(item.currency_id_1 == fromid && item.currency_id_2 == toid)
+            pair_id = item.id;
+          // if(item.code == "XRP")
+          //   toid = item.id;
+        })
+        // const { API_KEY, API_SECRET } = process.env;
+        // let API_KEY = "523c25ec-fc11-4660-99e5-f02f37310991";
+        const fs = require('fs');
+        const fileKey = __dirname + '/private.pem';
+
+        let  API_SECRET = fs.readFileSync(fileKey,  "utf8" );
+
+        const afileKey = __dirname + '/public.pem';
+
+        let  API_KEY = fs.readFileSync(afileKey,  "utf8" );
+        console.log(API_SECRET);
+        console.log(API_KEY);
+
+
+        const ab2str = (buffer: ArrayBuffer) =>
+          String.fromCharCode.apply(null, Array.from(new Uint8Array(buffer)));
+
+        const str2ab = (str: string): ArrayBuffer => {
+          const buffer = new ArrayBuffer(str.length);
+          const bufferInterface = new Uint8Array(buffer);
+          Array.from(str)
+            .forEach((_, index: number) => bufferInterface[index] = str.charCodeAt(index));
+          return buffer;
+        }
+        // let  API_SECRET= fs.readFileSync('private.pem');
+        const crypto = require("crypto");
+        const { subtle } = require('node:crypto').webcrypto;
+        let keyPair = await subtle.generateKey({name:"ECDSA",namedCurve:"P-256"},!0,["sign","verify"]);
+               console.log(keyPair);
+        let exportpublickey = await subtle.exportKey("spki",keyPair.publicKey);
+        // console.log(exportpublickey);
+        let exportprivatekey = await subtle.exportKey("pkcs8",keyPair.privateKey);
+        console.log(exportprivatekey);
+        const privExportedAsString = ab2str(exportprivatekey);
+        const privExportedAsBase64 = btoa(privExportedAsString);
+        const privateKeyPem = `${privExportedAsBase64}`;
+        // console.log(exportprivatekey.toString('base64'));
+        console.log(privateKeyPem);
+        // const ECDSA = require('ecdsa-secp256r1')
+        const pemHeader = "-----BEGIN PRIVATE KEY-----";
+        const pemFooter = "-----END PRIVATE KEY-----";
+        const pemContents = API_SECRET.substring(pemHeader.length, API_SECRET.length - pemFooter.length);
+        console.log(pemContents);
+        // const buff = Buffer.from(pemContents, 'base64');
+        // const str = buff.toString('utf-8');
+        // const privateKeyImportedAsString = Buffer.from(pemContents,'utf-8').toString('base64');
+        // const privateKeyImportedAsArrayBuffer = str2ab(str);
+
+        // const binaryDer = Buffer.from(privateKeyImportedAsString, 'base64');
+        // console.log(privateKeyImportedAsArrayBuffer);
+        // console.log(binaryDer);
+        const binaryDerString = Buffer.from(privExportedAsBase64, 'base64').toString('binary');
+        // convert from a binary string to an ArrayBuffer
+        const binaryDer = str2ab(binaryDerString);
+        const binaryDer1 = Buffer.from(pemContents, 'base64');
+        console.log(binaryDer);
+        // console.log(binaryDer1);
+        let tempcrypto = subtle.importKey("pkcs8",binaryDer,{name:"ECDSA",namedCurve:"P-256"},!0,["sign","verify"]);
+        console.log(tempcrypto);
+        // console.log(tempcrypto);
+        // const EprivateKey = ECDSA.fromCompressedPublicKey("29189af8-865c-48ab-a9a9-e6ba51fa7613");
+        // console.log(EprivateKey.toPEM());
+        // console.log(keyPair);
+        // let exportpublickey = await crypto.subtle.exportKey("spki",keyPair.publicKey);
+        // console.log(exportpublickey);
+        // let exportprivatekey = await crypto.subtle.exportKey("pkcs8",keyPair.privateKey);
+        // console.log(exportprivatekey);
+        // let pempublickey = spkiToPEM(exportpublickey,!1);
+      //   const toPkcs8der = (rawB64) => {
+      //     var rawPrivate = Buffer.from(rawB64, 'base64').subarray(0, 32);
+      //     var prefixPrivateEd25519 = Buffer.from('302e020100300506032b657004220420','hex');
+      //     var der = Buffer.concat([prefixPrivateEd25519, rawPrivate]);
+      //     return crypto.createPrivateKey({key: der, format: "der", type: "sha512"})
+      // }
+      //   const privateKey = toPkcs8der('MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgj8s+DJY/2aNCseImDYMKJ5oEBaCFWXtUzOPufYX6gQ+hRANCAAT3ZSWWH6UNjqGfmvT4rowHbSlDz9oLNxKhIe/IzoimRkaDPabHXbuOHpifD2d2bZVTMhZ475X1C/0xuvSV44a1');
+        const endpoint = '/private/add_order';
+        console.log("pair_id   :   ", pair_id)
+
+        // Parameters we are going to send
+        const params = {
+          nonce: Date.now().toString(),
+          pair_id: pair_id,
+          order_direction: "buy",
+          order_type: "buy",
+          amount_1: "1",
+          price: "0.4",
+          trigger_condition: "LTE",
+          trigger_price: "0.41",
+        };
+
+        // Here we are encoding params to application/x-www-form-urlencoded format
+        // Using built-in URLSearchParams class
+        
+        const urlEncodedParams = new URLSearchParams(params).toString();
+        // console.log(Buffer.from(API_SECRET).toString('base64'));
+        // We concatenate api function with params string in order to create signature
+        const messageToSign = endpoint + urlEncodedParams;
+        // const messageToSign = endpoint;
+        // Use built-in module 'crypto' to create ECDSA signature with SHA512
+//        const signature = crypto.sign("sha512", Buffer.from(messageToSign), API_SECRET);
+        const signature = subtle.sign({ name: "ECDSA", hash: "SHA-512"}, binaryDer, Buffer.from(messageToSign));
+
+
+        // const esignature = EprivateKey.sign(messageToSign);
+        // console.log(esignature);
+        // const epublicKey = ECDSA.fromCompressedPublicKey(EprivateKey.toCompressedPublicKey())
+        // console.log(epublicKey.verify(messageToSign, esignature))
+        // console.log(crypto.verify('sha512',Buffer.from(messageToSign),API_KEY,signature));
+        // // console.log(API_SECRET);
+        // // console.log(signature);
+        // console.log(signature.toString('base64'));
+        // // Node-fetch http client is used to send HTTP request
+        const responses = await axios.post('https://limitlex.com/api' + endpoint, {
+          headers: {
+            'API-Key': API_KEY, // Your public api-key
+            'API-Sign': signature.toString('base64'), // Signature in base-64 format
+          },
+          body: urlEncodedParams, // Parameters in body of the request
+        });
+
+        // Done!
+        console.log(responses.data);
+      }, 10000)
+    })
+    // const botType: BotType = this.configService.get<BotType>(
+    //   EnvironmentalVariables.BOT_TYPE,
+    // )
+
+    // if (botType === BotType.LONG_SHORT) {
+    //   this.logger.log('Initializing Long Short algorithm')
+    //   await this.longShort.run()
+    // } else if (botType === BotType.MEAN_REVERSION) {
+    //   this.logger.log('Initializing Mean Reversion algorithm')
+    //   await this.meanReversion.run()
+    // } else {
+    //   this.logger.error(
+    //     'Please include a valid BOT_TYPE env variable',
+    //     BotService.name,
+    //   )
+    // }
+  }
+}
