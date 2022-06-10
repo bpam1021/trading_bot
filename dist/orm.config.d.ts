@@ -7,10 +7,6 @@ declare const config: {
     database: string;
     entities: string[];
     synchronize: boolean;
-    ssl: {
-        require: boolean;
-        rejectUnauthorized: boolean;
-    };
     migrationsRun: boolean;
     logging: boolean;
     logger: string;

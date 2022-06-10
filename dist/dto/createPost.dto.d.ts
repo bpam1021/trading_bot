@@ -1,4 +1,4 @@
-declare class UpdateSetCurrencyDto {
+declare class CreatePostDto {
     fromcurrency?: string;
     tocurrency?: string;
     bidprice?: number;
@@ -9,5 +9,6 @@ declare class UpdateSetCurrencyDto {
     askamount?: number;
     startaskprogres?: number;
     endaskprogress?: number;
+    startflag?: boolean;
 }
-export default UpdateSetCurrencyDto;
+export default CreatePostDto;

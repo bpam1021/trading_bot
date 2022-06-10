@@ -23,11 +23,11 @@ class Post {
   public tocurrency: string;
 
   @ApiProperty()
-  @Column({type:"float", default: 10 })
+  @Column({type:"float", default: 0.4 })
   public bidprice: number;
 
   @ApiProperty()
-  @Column({type:"float", default: 10 })
+  @Column({type:"float", default: 5 })
   public bidamount: number;
 
   @ApiProperty()
@@ -39,11 +39,11 @@ class Post {
   public endbidprogress: number;
 
   @ApiProperty()
-  @Column({type:"float", default: 10.3 })
+  @Column({type:"float", default: 0.43 })
   public askprice: number;
 
   @ApiProperty()
-  @Column({type:"float", default: 15 })
+  @Column({type:"float", default: 5 })
   public askamount: number;
 
   @ApiProperty()
@@ -58,6 +58,21 @@ class Post {
   @Column({ default: 0 })
   public startflag: boolean;
 
+  @ApiProperty()
+  @Column({type:"float", default: 10 })
+  public stime: number;
+
+  @ApiProperty()
+  @Column({type:"float", default: 20 })
+  public etime: number;
+
+  @ApiProperty()
+  @Column({type:"float", default: 0.5 })
+  public price_rate: number;
+
+  @ApiProperty()
+  @Column({type:"float", default: 200 })
+  public ytime: number;
 }
 
 export default Post;

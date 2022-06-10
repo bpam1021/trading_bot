@@ -11,77 +11,73 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const class_validator_1 = require("class-validator");
 const swagger_1 = require("@nestjs/swagger");
-class UpdateSetCurrencyDto {
+class CreatePostDto {
 }
 __decorate([
     swagger_1.ApiProperty(),
     class_validator_1.IsString(),
     class_validator_1.IsNotEmpty(),
-    class_validator_1.IsOptional(),
     __metadata("design:type", String)
-], UpdateSetCurrencyDto.prototype, "fromcurrency", void 0);
+], CreatePostDto.prototype, "fromcurrency", void 0);
 __decorate([
     swagger_1.ApiProperty(),
     class_validator_1.IsString(),
     class_validator_1.IsNotEmpty(),
-    class_validator_1.IsOptional(),
     __metadata("design:type", String)
-], UpdateSetCurrencyDto.prototype, "tocurrency", void 0);
+], CreatePostDto.prototype, "tocurrency", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    class_validator_1.IsString(),
+    class_validator_1.IsNumber(),
     class_validator_1.IsNotEmpty(),
-    class_validator_1.IsOptional(),
     __metadata("design:type", Number)
-], UpdateSetCurrencyDto.prototype, "bidprice", void 0);
+], CreatePostDto.prototype, "bidprice", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    class_validator_1.IsString(),
+    class_validator_1.IsNumber(),
     class_validator_1.IsNotEmpty(),
-    class_validator_1.IsOptional(),
     __metadata("design:type", Number)
-], UpdateSetCurrencyDto.prototype, "bidamount", void 0);
+], CreatePostDto.prototype, "bidamount", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    class_validator_1.IsString(),
+    class_validator_1.IsNumber(),
     class_validator_1.IsNotEmpty(),
-    class_validator_1.IsOptional(),
     __metadata("design:type", Number)
-], UpdateSetCurrencyDto.prototype, "startbidprogres", void 0);
+], CreatePostDto.prototype, "startbidprogres", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    class_validator_1.IsString(),
+    class_validator_1.IsNumber(),
     class_validator_1.IsNotEmpty(),
-    class_validator_1.IsOptional(),
     __metadata("design:type", Number)
-], UpdateSetCurrencyDto.prototype, "endbidprogress", void 0);
+], CreatePostDto.prototype, "endbidprogress", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    class_validator_1.IsString(),
+    class_validator_1.IsNumber(),
     class_validator_1.IsNotEmpty(),
-    class_validator_1.IsOptional(),
     __metadata("design:type", Number)
-], UpdateSetCurrencyDto.prototype, "askprice", void 0);
+], CreatePostDto.prototype, "askprice", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    class_validator_1.IsString(),
+    class_validator_1.IsNumber(),
     class_validator_1.IsNotEmpty(),
-    class_validator_1.IsOptional(),
     __metadata("design:type", Number)
-], UpdateSetCurrencyDto.prototype, "askamount", void 0);
+], CreatePostDto.prototype, "askamount", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    class_validator_1.IsString(),
+    class_validator_1.IsNumber(),
     class_validator_1.IsNotEmpty(),
-    class_validator_1.IsOptional(),
     __metadata("design:type", Number)
-], UpdateSetCurrencyDto.prototype, "startaskprogres", void 0);
+], CreatePostDto.prototype, "startaskprogres", void 0);
 __decorate([
     swagger_1.ApiProperty(),
-    class_validator_1.IsString(),
+    class_validator_1.IsNumber(),
     class_validator_1.IsNotEmpty(),
-    class_validator_1.IsOptional(),
     __metadata("design:type", Number)
-], UpdateSetCurrencyDto.prototype, "endaskprogress", void 0);
-exports.default = UpdateSetCurrencyDto;
-//# sourceMappingURL=updateSetCurrency.dto.js.map
+], CreatePostDto.prototype, "endaskprogress", void 0);
+__decorate([
+    swagger_1.ApiProperty(),
+    class_validator_1.IsBoolean(),
+    class_validator_1.IsNotEmpty(),
+    __metadata("design:type", Boolean)
+], CreatePostDto.prototype, "startflag", void 0);
+exports.default = CreatePostDto;
+//# sourceMappingURL=createPost.dto.js.map

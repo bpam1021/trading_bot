@@ -18,6 +18,7 @@ import PostsService from "./posts.service";
 import CreatePostDto from "./dto/createPost.dto";
 import UpdateSetAskParamDto from "./dto/updateSetAskParam.dto";
 import UpdateSetBidParamDto from "./dto/updateSetBidParam.dto";
+import UpdateSetRangeParamDto from "./dto/updateSetRangeParam.dto";
 import UpdateSetCurrencyDto from "./dto/updateSetCurrency.dto";
 import UpdateSetStartParamDto from "./dto/updateSetStartParam.dto";
 import FindOneParams from "../utils/findOneParams";
@@ -61,6 +62,8 @@ export default class PostsController {
   async createPost(
     @Body() post: UpdateSetCurrencyDto,
   ): Promise<CreatePostDto> {
+    let res = await this.cancelallorders();
+
     let oldpost = await this.getAllPosts();
     let newpost;
     if(oldpost.length == 0)
@@ -74,6 +77,13 @@ export default class PostsController {
   // @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: "Set Bid Params" })
   async setBid(@Body() biddata: UpdateSetBidParamDto){
+    return this.postsService.updatePost(1,biddata);
+  }
+
+  @Post("SetRange")
+  // @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: "Set Bid Params" })
+  async setRange(@Body() biddata: UpdateSetRangeParamDto){
     return this.postsService.updatePost(1,biddata);
   }
 
@@ -144,7 +154,7 @@ export default class PostsController {
     const cancelAllOrderPrKey = __dirname + '../../../pem/cancelAllOrderPrKey.pem';
 
     let  PR_KEY_ORDER = "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgRlOk122yZUclC2dr\nxqYV7c2npZj+2tvxwprCNkRWKlKhRANCAAQy3Cn0h7BEsflowwy4tz3qex6Jfxlb\nH/xNMqPrjsa3PrFKoWWzymKkl9xr+ceECflRVVd918V+HaSPhLCUdnT0\n-----END PRIVATE KEY-----";
-    let  PR_KEY_CANCEL_ORDER = "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgUEujiWQ5uNpernfe\n1B0cc66hnF4W3IyGndgz8UocJnuhRANCAARZC/LjUwb5jwAPxWBxLKBhcF7E2uvW\n/pOyWBu0IX0IVPtyH9EUIqkgvtDKQGdFxbEoMMX1fzrVfYmzQKDpL6PX\n-----END PRIVATE KEY-----";
+    let  PR_KEY_CANCEL_ORDER = "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQge6YxbEYJ+q2L3O8r\ncdHRTxjAECydrsY64784MX4uKA+hRANCAARYTjl1j0e4BtM+6HdrgP6hI7+08eZk\nSPcHoe3WBBSjUkgZQ9fJ6DCdsCqwYXSK50HHTEvyv+15OnD5LUQ2QSLi\n-----END PRIVATE KEY-----";
 
     const orderPbKey = __dirname + '../../../pem/orderPbKey.pem';
     const cancelAllOrderPbKey = __dirname + '../../../pem/cancelAllOrderPbKey.pem';
@@ -152,7 +162,7 @@ export default class PostsController {
     let  API_KEY_TRADE = '3f4cb8f1-aa2f-48aa-bba6-dc50a370cfcf'
     let  PB_KEY_ORDER = 'ae45a8fc-d7fa-4e7c-acde-74a35f54e751';
     let  PB_KEY_ADD_ORDER = 'bb379fb9-8d64-4414-9387-edeaec1ad067';
-    let  PB_KEY_CANCEL_ORDER = '5a71182e-f4b7-46bd-8b02-4b523e775a23';
+    let  PB_KEY_CANCEL_ORDER = '6344b106-3976-4b9f-8bfc-2513e89ed3e3';
     const crypto = require("crypto");
     const endpoint_cancel_all_orders = '/private/cancel_all_orders';
     const endpoint_order = '/private/cancel_all_orders';

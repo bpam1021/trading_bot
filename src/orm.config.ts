@@ -16,10 +16,10 @@ const config = {
 
   // We are using migrations, synchronize should be set to false.
   synchronize: true,
-  ssl: {
-    require: true,
-    rejectUnauthorized: false,
-  },
+  // ssl: {
+  //   require: true,
+  //   rejectUnauthorized: false,
+  // },
   // Run migrations automatically,
   // you can disable this if you prefer running migration manually.
   migrationsRun: false,
