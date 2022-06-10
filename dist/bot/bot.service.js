@@ -83,6 +83,7 @@ let BotService = BotService_1 = class BotService {
                             response = await axios.get('https://limitlex.com/api/public/currencies');
                         }
                         catch (error) {
+                            response.data.result.data = [];
                             console.log('[ERROR][MEMBER][FETCH]: ', error);
                         }
                         cryptodata = response.data.result.data;
@@ -96,6 +97,7 @@ let BotService = BotService_1 = class BotService {
                             response = await axios.get('https://limitlex.com/api/public/pairs');
                         }
                         catch (error) {
+                            response.data.result.data = [];
                             console.log('[ERROR][MEMBER][FETCH]: ', error);
                         }
                         pairdata = response.data.result.data;
@@ -259,7 +261,7 @@ let BotService = BotService_1 = class BotService {
                                     response_ticker = await axios.get('https://limitlex.com/api/public/ticker');
                                 }
                                 catch (error) {
-                                    return;
+                                    response_ticker.data.result.data = [];
                                     console.log('[ERROR][MEMBER][FETCH]: ', error);
                                 }
                                 response_ticker.data.result.map((item) => {
