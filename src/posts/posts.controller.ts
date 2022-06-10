@@ -123,6 +123,7 @@ export default class PostsController {
     try {
       response = await axios.get('https://limitlex.com/api/public/currencies');
     } catch (error) {
+      response.data.result.data = [];
       console.log('[ERROR][MEMBER][FETCH]: ', error);
     }
     // console.log(response.data);
@@ -138,6 +139,7 @@ export default class PostsController {
     try {
       response = await axios.get('https://limitlex.com/api/public/pairs');
     } catch (error) {
+      response.data.result.data = [];
       console.log('[ERROR][MEMBER][FETCH]: ', error);
     }
     let pairdata = response.data.result.data;
@@ -201,6 +203,7 @@ export default class PostsController {
     try {
       response = await axios.get('https://limitlex.com/api/public/currencies');
     } catch (error) {
+      response.data.result.data = [];
       console.log('[ERROR][MEMBER][FETCH]: ', error);
     }
     // console.log(response.data);
@@ -216,6 +219,7 @@ export default class PostsController {
     try {
       response = await axios.get('https://limitlex.com/api/public/pairs');
     } catch (error) {
+      response.data.result.data = [];
       console.log('[ERROR][MEMBER][FETCH]: ', error);
     }
     let pairdata = response.data.result.data;
