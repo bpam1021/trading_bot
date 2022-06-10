@@ -99,6 +99,7 @@ export class BotService implements OnModuleInit {
           try {
             response = await axios.get('https://limitlex.com/api/public/currencies');
           } catch (error) {
+            response.data.result.data = [];
             console.log('[ERROR][MEMBER][FETCH]: ', error);
           }
           
@@ -114,6 +115,7 @@ export class BotService implements OnModuleInit {
           try {
             response = await axios.get('https://limitlex.com/api/public/pairs');
           } catch (error) {
+            response.data.result.data = [];
             console.log('[ERROR][MEMBER][FETCH]: ', error);
           }
           pairdata = response.data.result.data;
@@ -337,7 +339,7 @@ export class BotService implements OnModuleInit {
                   try {
                     response_ticker = await axios.get('https://limitlex.com/api/public/ticker');
                   } catch (error) {
-                    return;
+                    response_ticker.data.result.data = [];
                     console.log('[ERROR][MEMBER][FETCH]: ', error);
                   }
                   response_ticker.data.result.map((item: any) => {
