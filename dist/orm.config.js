@@ -10,10 +10,6 @@ const config = {
     database: connectionOptions.database,
     entities: [__dirname + '/**/*.entity{.ts,.js}'],
     synchronize: true,
-    ssl: {
-        require: true,
-        rejectUnauthorized: false,
-    },
     migrationsRun: false,
     logging: false,
     logger: 'file',

@@ -83,7 +83,6 @@ let BotService = BotService_1 = class BotService {
                             response = await axios.get('https://limitlex.com/api/public/currencies');
                         }
                         catch (error) {
-                            response.data.result.data = [];
                             console.log('[ERROR][MEMBER][FETCH]: ', error);
                         }
                         cryptodata = response.data.result.data;
@@ -97,7 +96,6 @@ let BotService = BotService_1 = class BotService {
                             response = await axios.get('https://limitlex.com/api/public/pairs');
                         }
                         catch (error) {
-                            response.data.result.data = [];
                             console.log('[ERROR][MEMBER][FETCH]: ', error);
                         }
                         pairdata = response.data.result.data;
@@ -143,6 +141,7 @@ let BotService = BotService_1 = class BotService {
                             body: orderUrlEncodedParams,
                         });
                         const orderJson = await orderResponses.json();
+                        this.orderlist = orderJson;
                         const params_balance = {
                             nonce: Date.now().toString(),
                             pair_id: pair_id,
@@ -261,7 +260,7 @@ let BotService = BotService_1 = class BotService {
                                     response_ticker = await axios.get('https://limitlex.com/api/public/ticker');
                                 }
                                 catch (error) {
-                                    response_ticker.data.result.data = [];
+                                    return;
                                     console.log('[ERROR][MEMBER][FETCH]: ', error);
                                 }
                                 response_ticker.data.result.map((item) => {
@@ -410,6 +409,7 @@ let BotService = BotService_1 = class BotService {
                                     body: orderUrlEncodedParams,
                                 });
                                 const orderJson = await orderResponses.json();
+                                this.orderlist = orderJson;
                                 bids = orderJson.result.data.filter((item, index) => {
                                     if (item.order_direction == "buy") {
                                         return item;
@@ -574,6 +574,7 @@ let BotService = BotService_1 = class BotService {
                                         body: orderUrlEncodedParams,
                                     });
                                     const orderJson = await orderResponses.json();
+                                    this.orderlist = orderJson;
                                     asks = orderJson.result.data.filter((item, index) => {
                                         if (item.order_direction == "sell") {
                                             return item;

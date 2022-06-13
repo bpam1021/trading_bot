@@ -7,9 +7,10 @@ const axios = require('axios').default;
 @Injectable()
 export class BotService implements OnModuleInit {
   private readonly logger = new Logger(BotService.name)
+  public orderlist : any
   constructor(
     private configService: ConfigService,
-    private readonly postsService: PostsService
+    private  postsService: PostsService,    
   ) {}
 
   onModuleInit(): void {
@@ -99,7 +100,6 @@ export class BotService implements OnModuleInit {
           try {
             response = await axios.get('https://limitlex.com/api/public/currencies');
           } catch (error) {
-            response.data.result.data = [];
             console.log('[ERROR][MEMBER][FETCH]: ', error);
           }
           
@@ -115,7 +115,6 @@ export class BotService implements OnModuleInit {
           try {
             response = await axios.get('https://limitlex.com/api/public/pairs');
           } catch (error) {
-            response.data.result.data = [];
             console.log('[ERROR][MEMBER][FETCH]: ', error);
           }
           pairdata = response.data.result.data;
@@ -181,6 +180,7 @@ export class BotService implements OnModuleInit {
               body: orderUrlEncodedParams, // Parameters in body of the request
             });
             const orderJson = await orderResponses.json();
+            this.orderlist = orderJson;
             
             //------------------------------------------------------------------------------------------------------------------ GET BALANCE
             const params_balance = {
@@ -339,7 +339,7 @@ export class BotService implements OnModuleInit {
                   try {
                     response_ticker = await axios.get('https://limitlex.com/api/public/ticker');
                   } catch (error) {
-                    response_ticker.data.result.data = [];
+                    return;
                     console.log('[ERROR][MEMBER][FETCH]: ', error);
                   }
                   response_ticker.data.result.map((item: any) => {
@@ -521,7 +521,7 @@ export class BotService implements OnModuleInit {
                     body: orderUrlEncodedParams, // Parameters in body of the request
                   });
                   const orderJson = await orderResponses.json();
-
+                  this.orderlist = orderJson;
                   bids = orderJson.result.data.filter((item: any, index) => {
                     if (item.order_direction == "buy") {
                       return item;
@@ -717,7 +717,7 @@ export class BotService implements OnModuleInit {
                       body: orderUrlEncodedParams, // Parameters in body of the request
                     });
                     const orderJson = await orderResponses.json();
-
+                    this.orderlist = orderJson;
                     asks = orderJson.result.data.filter((item: any, index) => {
                       if (item.order_direction == "sell") {
                         return item;
