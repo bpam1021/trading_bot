@@ -368,22 +368,22 @@ console.log("dynamic_is_started = ", dynamic_is_started);
                 dynamic_increase_counter = 0;
                 rand_increase = Math.floor(this.getRandom(dynamic_start_progress, dinamic_end_progress));
                 //----------------------------------------------------------------------------------------------------- GET "LAST PRICE"
-                try {
-                  response_ticker = await axios.get('https://limitlex.com/api/public/ticker');
-                } catch (error) {
-                  return;
-                  console.log('[ERROR][MEMBER][FETCH]: ', error);
-                }
-                response_ticker.data.result.map((item: any) => {
-                  if(item.pair_id == pair_id) {
-                    current_price = parseFloat(item.last_price);
-                  }
-                });
+                // try {
+                //   response_ticker = await axios.get('https://limitlex.com/api/public/ticker');
+                // } catch (error) {
+                //   return;
+                //   console.log('[ERROR][MEMBER][FETCH]: ', error);
+                // }
+                // response_ticker.data.result.map((item: any) => {
+                //   if(item.pair_id == pair_id) {
+                //     current_price = parseFloat(item.last_price);
+                //   }
+                // });
                 
-                this.logger.log(current_price,"CURRENT PRICE");
-                this.logger.log(trade_last_price,"LAST PRICE");
+                // this.logger.log(current_price,"CURRENT PRICE");
+                // this.logger.log(trade_last_price,"LAST PRICE");
                 //------------------------------------------------------------------------------------ ACTION ON INCREASE "MARKET PRICE"
-                if( trade_last_price < current_price ) {
+                // if( trade_last_price < current_price ) {
                 // if( testDynamic == true ) {
 
                   console.log("arrive1");
@@ -542,7 +542,8 @@ console.log("dynamic_is_started = ", dynamic_is_started);
 
                   
 
-                }
+                
+
                 trade_last_price = current_price;
                 //-------------------------------------------------------------------------------------------RECHECK FULL FILLED ORDERS
                 const params_order = {
@@ -578,24 +579,24 @@ console.log("dynamic_is_started = ", dynamic_is_started);
                 rand_decrease = Math.floor(this.getRandom(dynamic_start_progress, dinamic_end_progress) * Y/100);
                 //----------------------------------------------------------------------------------- ACTION ON DECREASE "MARKET PRICE"
                 //---------------------------------------------------------------------------------------------------- GET "LAST PRICE"
-                try {
-                  response_ticker = await axios.get('https://limitlex.com/api/public/ticker');
-                } catch (error) {                    
-                  console.log('[ERROR][MEMBER][FETCH]: ', error);
-                  return;
-                }
-                response_ticker.data.result.map((item: any) => {
-                  if(item.pair_id == pair_id) {
-                    current_price = parseFloat(item.last_price);
-                  }
-                });
+                // try {
+                //   response_ticker = await axios.get('https://limitlex.com/api/public/ticker');
+                // } catch (error) {                    
+                //   console.log('[ERROR][MEMBER][FETCH]: ', error);
+                //   return;
+                // }
+                // response_ticker.data.result.map((item: any) => {
+                //   if(item.pair_id == pair_id) {
+                //     current_price = parseFloat(item.last_price);
+                //   }
+                // });
                 // if(testcounter >=30)
                 // {
                 //   testcounter = 0;
                 //   current_price = 0.3;
                 // }
                 this.logger.log(current_price,"CURRENT PRICE");
-                if( trade_last_price > current_price ) { 
+                // if( trade_last_price > current_price ) { 
                   console.log("arrive2");
                   //------------------------------------------------------------------------------------------------ CANCEL HIGHEST BID
                   // SEEK OUT THE ORDER_ID OF HIGHEST BID PRICE
@@ -776,12 +777,27 @@ console.log("dynamic_is_started = ", dynamic_is_started);
 
                   if( asks.length >=25 ) { is_ask_order_filled = true; }
 
-                }
+                
                 trade_last_price = current_price;
                 
               }
             } else { trade_last_price = current_price; }
           } 
+        }
+        else
+        {
+          this.postsService.createPost({
+            "fromcurrency": "USDT",
+            "tocurrency": "XRP",
+            "bidprice": 0.4,
+            "bidamount": 5,
+            "startbidprogres": 0.1,
+            "endbidprogress": 0.2,
+            "askprice": 0.41,
+            "askamount": 5,
+            "startaskprogres": 0.1,
+            "endaskprogress": 0.2
+          });
         }
         
         //######################################################################################################## FULL FILLED ORDERING
