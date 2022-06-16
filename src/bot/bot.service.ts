@@ -400,7 +400,9 @@ console.log("dynamic_is_started = ", dynamic_is_started);
                   
                   ask_prices.sort(function(a, b){return a-b});
                   lowest_ask_price = ask_prices[0];
-
+                  console.log("important!!!!!");
+                  console.log(lowest_ask_price);
+                  console.log(ask_prices);
                   let lowest_ask_id;
                   asks.map((item: any) => {
                     if( parseFloat(item.price) == lowest_ask_price ){
@@ -431,49 +433,27 @@ console.log("dynamic_is_started = ", dynamic_is_started);
 
                   //------------------------------------------------------------------------------------------ Remove canceled ask on DB
 
-                  //----------------------------------------------------------------------- ADD A NEW BID WITH THE PRICE OF CANCELED ASK
-                  let params_with_canceled_ask_price = {
-                    nonce: Date.now().toString(),
-                    pair_id: pair_id,
-                    order_direction: "buy",
-                    order_type: "limit",
-                    price: lowest_ask_price,
-                    amount_1: bidAmount.toString(),
-                  };
-                  console.log("A NEW BID!!!!!");
-                  console.log(params_with_canceled_ask_price);
-                  const addNewOrderUrlEncodedParams = new URLSearchParams(params_with_canceled_ask_price).toString();
-                  const addNewOrderMessageToSign = endpoint_add_order + addNewOrderUrlEncodedParams;
-                  const addNewOrderSignature = crypto.sign("sha512", Buffer.from(addNewOrderMessageToSign), PR_KEY_ADD_ORDER);
-                  const addNewOrderResponses = await fetch('https://limitlex.com/api' + endpoint_add_order, {
-                    method: 'POST',
-                    headers: {
-                      'API-Key': PB_KEY_ADD_ORDER, // Your public api-key
-                      'API-Sign': addNewOrderSignature.toString('base64'), // Signature in base-64 format
-                    },
-                    body: addNewOrderUrlEncodedParams, // Parameters in body of the request
-                  });
-                  const addNewOrderJson = await addNewOrderResponses.json();
+                  
                   // console.log("addNewOrderJson:",addNewOrderJson);
 
                   //----------------------------------------------------------------------------- CLOSE ALL BIDS EXCEPT HIGHEST BID
                   // SEEK OUT THE ORDER_ID, PRICE, AMOUNT OF HIGHEST BID PRICE
-                  let bid_prices = bids.map((item: any) => {
-                    return parseFloat(item.price);
-                  });
+                  // let bid_prices = bids.map((item: any) => {
+                  //   return parseFloat(item.price);
+                  // });
                   
-                  bid_prices.sort(function(a, b){return b-a});
-                  highest_bid_price = bid_prices[0];
+                  // bid_prices.sort(function(a, b){return b-a});
+                  // highest_bid_price = bid_prices[0];
 
-                  let highest_bid_amount;
-                  bids.map((item: any) => {
-                    if( parseFloat(item.price) == highest_bid_price ){
-                        highest_bid_amount = item.amount_initial;
-                    }
-                  });
-                  console.log("highest!!!!");
-                  console.log(highest_bid_price);
-                  console.log(highest_bid_amount);
+                  // let highest_bid_amount;
+                  // bids.map((item: any) => {
+                  //   if( parseFloat(item.price) == highest_bid_price ){
+                  //       highest_bid_amount = item.amount_initial;
+                  //   }
+                  // });
+                  // console.log("highest!!!!");
+                  // console.log(highest_bid_price);
+                  // console.log(highest_bid_amount);
                   // CANCEL ALL BID ORDERS
                   let params_cancel_bid_orders = {
                     nonce: Date.now().toString(),
@@ -498,51 +478,53 @@ console.log("dynamic_is_started = ", dynamic_is_started);
                   // console.log("cancelAllOrderJson: ",cancelAllOrderJson);
 
                   // ADD A NEW BID WITH HIGHEST PRICE AND AMOUNT
-                  let params_add_highest_bid_order = {
+                  //----------------------------------------------------------------------- ADD A NEW BID WITH THE PRICE OF CANCELED ASK
+                  let params_with_canceled_ask_price = {
                     nonce: Date.now().toString(),
                     pair_id: pair_id,
                     order_direction: "buy",
                     order_type: "limit",
-                    price: highest_bid_price.toString(),
-                    amount_1: highest_bid_amount,
+                    price: lowest_ask_price,
+                    amount_1: bidAmount.toString(),
                   };
-        
-                  const addHighestBidUrlEncodedParams = new URLSearchParams(params_add_highest_bid_order).toString();
-                  const addHighestOrderMessageToSign = endpoint_add_order + addHighestBidUrlEncodedParams;
-                  const addHighestBidOrderSignature = crypto.sign("sha512", Buffer.from(addHighestOrderMessageToSign), PR_KEY_ADD_ORDER);
-                  const addHighestBidOrderResponses = await fetch('https://limitlex.com/api' + endpoint_add_order, {
+                  console.log("A NEW BID!!!!!");
+                  console.log(params_with_canceled_ask_price);
+                  const addNewOrderUrlEncodedParams = new URLSearchParams(params_with_canceled_ask_price).toString();
+                  const addNewOrderMessageToSign = endpoint_add_order + addNewOrderUrlEncodedParams;
+                  const addNewOrderSignature = crypto.sign("sha512", Buffer.from(addNewOrderMessageToSign), PR_KEY_ADD_ORDER);
+                  const addNewOrderResponses = await fetch('https://limitlex.com/api' + endpoint_add_order, {
                     method: 'POST',
                     headers: {
                       'API-Key': PB_KEY_ADD_ORDER, // Your public api-key
-                      'API-Sign': addHighestBidOrderSignature.toString('base64'), // Signature in base-64 format
+                      'API-Sign': addNewOrderSignature.toString('base64'), // Signature in base-64 format
                     },
-                    body: addHighestBidUrlEncodedParams, // Parameters in body of the request
+                    body: addNewOrderUrlEncodedParams, // Parameters in body of the request
                   });
-                  const addHighestBidOrderJson = await addHighestBidOrderResponses.json();
+                  const addNewOrderJson = await addNewOrderResponses.json();
                   // console.log("addHighestBidOrderJson:",addHighestBidOrderJson);
 
                   // ADD A NEW ASK WITH REGULAR PRICE AND AMOUNT
-                  let params_add_ask_order = {
-                    nonce: Date.now().toString(),
-                    pair_id: pair_id,
-                    order_direction: "sell",
-                    order_type: "limit",
-                    price: ask_price.toString(),
-                    amount_1: askAmount.toString(),
-                  };
+                  // let params_add_ask_order = {
+                  //   nonce: Date.now().toString(),
+                  //   pair_id: pair_id,
+                  //   order_direction: "sell",
+                  //   order_type: "limit",
+                  //   price: ask_price.toString(),
+                  //   amount_1: askAmount.toString(),
+                  // };
 
-                  const addAskOrderUrlEncodedParams = new URLSearchParams(params_add_ask_order).toString();
-                  const addAskOrderMessageToSign = endpoint_add_order + addAskOrderUrlEncodedParams;
-                  const addAskOrderSignature = crypto.sign("sha512", Buffer.from(addAskOrderMessageToSign), PR_KEY_ADD_ORDER);
-                  const addAskOrderResponses = await fetch('https://limitlex.com/api' + endpoint_add_order, {
-                    method: 'POST',
-                    headers: {
-                      'API-Key': PB_KEY_ADD_ORDER, // Your public api-key
-                      'API-Sign': addAskOrderSignature.toString('base64'), // Signature in base-64 format
-                    },
-                    body: addAskOrderUrlEncodedParams, // Parameters in body of the request
-                  });
-                  const addAskOrderJson = await addAskOrderResponses.json();
+                  // const addAskOrderUrlEncodedParams = new URLSearchParams(params_add_ask_order).toString();
+                  // const addAskOrderMessageToSign = endpoint_add_order + addAskOrderUrlEncodedParams;
+                  // const addAskOrderSignature = crypto.sign("sha512", Buffer.from(addAskOrderMessageToSign), PR_KEY_ADD_ORDER);
+                  // const addAskOrderResponses = await fetch('https://limitlex.com/api' + endpoint_add_order, {
+                  //   method: 'POST',
+                  //   headers: {
+                  //     'API-Key': PB_KEY_ADD_ORDER, // Your public api-key
+                  //     'API-Sign': addAskOrderSignature.toString('base64'), // Signature in base-64 format
+                  //   },
+                  //   body: addAskOrderUrlEncodedParams, // Parameters in body of the request
+                  // });
+                  // const addAskOrderJson = await addAskOrderResponses.json();
                   // console.log("addAskOrderJson:", addAskOrderJson);
 
                   
@@ -551,32 +533,32 @@ console.log("dynamic_is_started = ", dynamic_is_started);
 
                 trade_last_price = current_price;
                 //-------------------------------------------------------------------------------------------RECHECK FULL FILLED ORDERS
-                const params_order = {
-                  nonce: Date.now().toString(),
-                  pair_id: pair_id,
-                };
+                // const params_order = {
+                //   nonce: Date.now().toString(),
+                //   pair_id: pair_id,
+                // };
                 
-                const orderUrlEncodedParams = new URLSearchParams(params_order).toString();
-                const orderMessageToSign = endpoint_order + orderUrlEncodedParams;
-                const orderSignature = crypto.sign("sha512", Buffer.from(orderMessageToSign), PR_KEY_ORDER);
+                // const orderUrlEncodedParams = new URLSearchParams(params_order).toString();
+                // const orderMessageToSign = endpoint_order + orderUrlEncodedParams;
+                // const orderSignature = crypto.sign("sha512", Buffer.from(orderMessageToSign), PR_KEY_ORDER);
                 
-                const orderResponses = await fetch('https://limitlex.com/api' + endpoint_order, {
-                  method: 'POST',
-                  headers: {
-                    'API-Key': PB_KEY_ORDER, // Your public api-key
-                    'API-Sign': orderSignature.toString('base64'), // Signature in base-64 format
-                  },
-                  body: orderUrlEncodedParams, // Parameters in body of the request
-                });
-                const orderJson = await orderResponses.json();
-                this.orderlist = orderJson;
-                bids = orderJson.result.data.filter((item: any, index) => {
-                  if (item.order_direction == "buy") {
-                    return item;
-                  }
-                })
+                // const orderResponses = await fetch('https://limitlex.com/api' + endpoint_order, {
+                //   method: 'POST',
+                //   headers: {
+                //     'API-Key': PB_KEY_ORDER, // Your public api-key
+                //     'API-Sign': orderSignature.toString('base64'), // Signature in base-64 format
+                //   },
+                //   body: orderUrlEncodedParams, // Parameters in body of the request
+                // });
+                // const orderJson = await orderResponses.json();
+                // this.orderlist = orderJson;
+                // bids = orderJson.result.data.filter((item: any, index) => {
+                //   if (item.order_direction == "buy") {
+                //     return item;
+                //   }
+                // })
 
-                if( bids.length >= 25 ) { is_bid_order_filled = true; }
+                // if( bids.length >= 25 ) { is_bid_order_filled = true; }
 
               }
               if( dynamic_decrease_counter >= rand_decrease ) {
@@ -641,47 +623,27 @@ console.log("dynamic_is_started = ", dynamic_is_started);
                   const cancelOrderJson = await cancelOrderResponses.json();
                   // console.log("cancelOrderJson: ",cancelOrderJson);
 
-                  //------------------------------------------------------------------------ ADD A NEW ASK WITH THE PRIC OF HIGHEST BID
-                  let params_with_canceled_bid_price = {
-                    nonce: Date.now().toString(),
-                    pair_id: pair_id,
-                    order_direction: "ask",
-                    order_type: "limit",
-                    price: highest_bid_price,
-                    amount_1: bidAmount.toString(),
-                  };
-                  const addNewOrderUrlEncodedParams = new URLSearchParams(params_with_canceled_bid_price).toString();
-                  const addNewOrderMessageToSign = endpoint_add_order + addNewOrderUrlEncodedParams;
-                  const addNewOrderSignature = crypto.sign("sha512", Buffer.from(addNewOrderMessageToSign), PR_KEY_ADD_ORDER);
-                  const addNewOrderResponses = await fetch('https://limitlex.com/api' + endpoint_add_order, {
-                    method: 'POST',
-                    headers: {
-                      'API-Key': PB_KEY_ADD_ORDER, // Your public api-key
-                      'API-Sign': addNewOrderSignature.toString('base64'), // Signature in base-64 format
-                    },
-                    body: addNewOrderUrlEncodedParams, // Parameters in body of the request
-                  });
-                  const addNewOrderJson = await addNewOrderResponses.json();
+                  
                   // console.log("addNewOrderJson:",addNewOrderJson);
 
                   //--------------------------------------------------------------------------------- CLOSE ALL ASKS EXCEPT LOWEST ASK
                   // SEEK OUT THE ORDER_ID, PRICE, AMOUNT OF LOWEST ASK PRICE
-                  let ask_prices = asks.map((item: any) => {
-                    return parseFloat(item.price);
-                  });
+                  // let ask_prices = asks.map((item: any) => {
+                  //   return parseFloat(item.price);
+                  // });
                   
-                  ask_prices.sort(function(a, b){return a-b});
-                  lowest_ask_price = ask_prices[0];
+                  // ask_prices.sort(function(a, b){return a-b});
+                  // lowest_ask_price = ask_prices[0];
 
-                  let lowest_ask_amount;
-                  asks.map((item: any) => {
-                    if( parseFloat(item.price) == lowest_ask_price ){
-                        lowest_ask_amount = item.amount_initial;
-                    }
-                  });
-                  console.log("low ask");
-                  console.log(lowest_ask_amount);
-                  console.log(lowest_ask_price);
+                  // let lowest_ask_amount;
+                  // asks.map((item: any) => {
+                  //   if( parseFloat(item.price) == lowest_ask_price ){
+                  //       lowest_ask_amount = item.amount_initial;
+                  //   }
+                  // });
+                  // console.log("low ask");
+                  // console.log(lowest_ask_amount);
+                  // console.log(lowest_ask_price);
                   // CANCEL ALL ASK ORDERS
                   let params_cancel_ask_orders = {
                     nonce: Date.now().toString(),
@@ -703,84 +665,83 @@ console.log("dynamic_is_started = ", dynamic_is_started);
                   const cancelAllOrderJson = await cancelAllOrderResponses.json();
                   // console.log("cancelAllOrderJson: ",cancelAllOrderJson);
 
-                  // ADD A NEW ASK WITH LOWEST PRICE AND AMOUNT
-                  let params_add_lowest_ask_order = {
+                  //------------------------------------------------------------------------ ADD A NEW ASK WITH THE PRIC OF HIGHEST BID
+                  let params_with_canceled_bid_price = {
                     nonce: Date.now().toString(),
                     pair_id: pair_id,
-                    order_direction: "buy",
+                    order_direction: "ask",
                     order_type: "limit",
-                    price: lowest_ask_price.toString(),
-                    amount_1: lowest_ask_amount,
+                    price: highest_bid_price,
+                    amount_1: askAmount.toString(),
                   };
-                  console.log(params_add_lowest_ask_order);
-                  const addLowestAskUrlEncodedParams = new URLSearchParams(params_add_lowest_ask_order).toString();
-                  const addLowestAskOrderMessageToSign = endpoint_add_order + addLowestAskUrlEncodedParams;
-                  const addLowestAskOrderSignature = crypto.sign("sha512", Buffer.from(addLowestAskOrderMessageToSign), PR_KEY_ADD_ORDER);
-                  const addLowestAskOrderResponses = await fetch('https://limitlex.com/api' + endpoint_add_order, {
+                  const addNewOrderUrlEncodedParams = new URLSearchParams(params_with_canceled_bid_price).toString();
+                  const addNewOrderMessageToSign = endpoint_add_order + addNewOrderUrlEncodedParams;
+                  const addNewOrderSignature = crypto.sign("sha512", Buffer.from(addNewOrderMessageToSign), PR_KEY_ADD_ORDER);
+                  const addNewOrderResponses = await fetch('https://limitlex.com/api' + endpoint_add_order, {
                     method: 'POST',
                     headers: {
                       'API-Key': PB_KEY_ADD_ORDER, // Your public api-key
-                      'API-Sign': addLowestAskOrderSignature.toString('base64'), // Signature in base-64 format
+                      'API-Sign': addNewOrderSignature.toString('base64'), // Signature in base-64 format
                     },
-                    body: addLowestAskUrlEncodedParams, // Parameters in body of the request
+                    body: addNewOrderUrlEncodedParams, // Parameters in body of the request
                   });
-                  const addLowestAskOrderJson = await addLowestAskOrderResponses.json();
+                  const addNewOrderJson = await addNewOrderResponses.json();
                   // console.log("addHighestBidOrderJson:",addLowestAskOrderJson);
 
                   // ADD A NEW BID WITH REGULAR PRICE AND AMOUNT
-                  let params_add_bid_order = {
-                    nonce: Date.now().toString(),
-                    pair_id: pair_id,
-                    order_direction: "buy",
-                    order_type: "limit",
-                    price: buy_price.toString(),
-                    amount_1: bidAmount.toString(),
-                  };
+                  // let params_add_bid_order = {
+                  //   nonce: Date.now().toString(),
+                  //   pair_id: pair_id,
+                  //   order_direction: "buy",
+                  //   order_type: "limit",
+                  //   price: buy_price.toString(),
+                  //   amount_1: bidAmount.toString(),
+                  // };
 
-                  const addBidOrderUrlEncodedParams = new URLSearchParams(params_add_bid_order).toString();
-                  const addBidOrderMessageToSign = endpoint_add_order + addBidOrderUrlEncodedParams;
-                  const addBidOrderSignature = crypto.sign("sha512", Buffer.from(addBidOrderMessageToSign), PR_KEY_ADD_ORDER);
-                  const addBidOrderResponses = await fetch('https://limitlex.com/api' + endpoint_add_order, {
-                    method: 'POST',
-                    headers: {
-                      'API-Key': PB_KEY_ADD_ORDER, // Your public api-key
-                      'API-Sign': addBidOrderSignature.toString('base64'), // Signature in base-64 format
-                    },
-                    body: addBidOrderUrlEncodedParams, // Parameters in body of the request
-                  });
-                  const addBidOrderJson = await addBidOrderResponses.json();
+                  // const addBidOrderUrlEncodedParams = new URLSearchParams(params_add_bid_order).toString();
+                  // const addBidOrderMessageToSign = endpoint_add_order + addBidOrderUrlEncodedParams;
+                  // const addBidOrderSignature = crypto.sign("sha512", Buffer.from(addBidOrderMessageToSign), PR_KEY_ADD_ORDER);
+                  // const addBidOrderResponses = await fetch('https://limitlex.com/api' + endpoint_add_order, {
+                  //   method: 'POST',
+                  //   headers: {
+                  //     'API-Key': PB_KEY_ADD_ORDER, // Your public api-key
+                  //     'API-Sign': addBidOrderSignature.toString('base64'), // Signature in base-64 format
+                  //   },
+                  //   body: addBidOrderUrlEncodedParams, // Parameters in body of the request
+                  // });
+                  // const addBidOrderJson = await addBidOrderResponses.json();
                   // console.log("addBidOrderJson:", addBidOrderJson);
                   
                   // SET LAST_PRICE BY CURRENT_PRICE
-                  trade_last_price = current_price;
+                  // trade_last_price = current_price;
                   
-                  //-------------------------------------------------------------------------------------------RECHECK FULL FILLED ORDERS
-                  const params_order = {
-                    nonce: Date.now().toString(),
-                    pair_id: pair_id,
-                  };
+                  // //-------------------------------------------------------------------------------------------RECHECK FULL FILLED ORDERS
+                  // const params_order = {
+                  //   nonce: Date.now().toString(),
+                  //   pair_id: pair_id,
+                  // };
 
-                  const orderUrlEncodedParams = new URLSearchParams(params_order).toString();
-                  const orderMessageToSign = endpoint_order + orderUrlEncodedParams;
-                  const orderSignature = crypto.sign("sha512", Buffer.from(orderMessageToSign), PR_KEY_ORDER);
+                  // const orderUrlEncodedParams = new URLSearchParams(params_order).toString();
+                  // const orderMessageToSign = endpoint_order + orderUrlEncodedParams;
+                  // const orderSignature = crypto.sign("sha512", Buffer.from(orderMessageToSign), PR_KEY_ORDER);
 
-                  const orderResponses = await fetch('https://limitlex.com/api' + endpoint_order, {
-                    method: 'POST',
-                    headers: {
-                      'API-Key': PB_KEY_ORDER, // Your public api-key
-                      'API-Sign': orderSignature.toString('base64'), // Signature in base-64 format
-                    },
-                    body: orderUrlEncodedParams, // Parameters in body of the request
-                  });
-                  const orderJson = await orderResponses.json();
-                  this.orderlist = orderJson;
-                  asks = orderJson.result.data.filter((item: any, index) => {
-                    if (item.order_direction == "sell") {
-                      return item;
-                    }
-                  })
+                  // const orderResponses = await fetch('https://limitlex.com/api' + endpoint_order, {
+                  //   method: 'POST',
+                  //   headers: {
+                  //     'API-Key': PB_KEY_ORDER, // Your public api-key
+                  //     'API-Sign': orderSignature.toString('base64'), // Signature in base-64 format
+                  //   },
+                  //   body: orderUrlEncodedParams, // Parameters in body of the request
+                  // });
+                  // const orderJson = await orderResponses.json();
+                  // this.orderlist = orderJson;
+                  // asks = orderJson.result.data.filter((item: any, index) => {
+                  //   if (item.order_direction == "sell") {
+                  //     return item;
+                  //   }
+                  // })
 
-                  if( asks.length >=25 ) { is_ask_order_filled = true; }
+                  // if( asks.length >=25 ) { is_ask_order_filled = true; }
 
                 
                 trade_last_price = current_price;
