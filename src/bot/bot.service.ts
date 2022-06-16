@@ -475,7 +475,7 @@ console.log("dynamic_is_started = ", dynamic_is_started);
                   });
                   const cancelAllOrderJson = await cancelAllOrderResponses.json();
                   console.log(cancelAllOrderJson);
-                  // console.log("cancelAllOrderJson: ",cancelAllOrderJson);
+                  console.log("cancelAllOrderJson: ",cancelAllOrderJson);
 
                   // ADD A NEW BID WITH HIGHEST PRICE AND AMOUNT
                   //----------------------------------------------------------------------- ADD A NEW BID WITH THE PRICE OF CANCELED ASK
@@ -621,7 +621,7 @@ console.log("dynamic_is_started = ", dynamic_is_started);
                     body: cancelOrderUrlEncodedParams, // Parameters in body of the request
                   });
                   const cancelOrderJson = await cancelOrderResponses.json();
-                  // console.log("cancelOrderJson: ",cancelOrderJson);
+                  console.log("cancelOrderJson: ",cancelOrderJson);
 
                   
                   // console.log("addNewOrderJson:",addNewOrderJson);
@@ -648,7 +648,7 @@ console.log("dynamic_is_started = ", dynamic_is_started);
                   let params_cancel_ask_orders = {
                     nonce: Date.now().toString(),
                     pair_id: pair_id,
-                    direction: "ask",
+                    direction: "sell",
                   };
         
                   const cancelAllOrderUrlEncodedParams = new URLSearchParams(params_cancel_ask_orders).toString();
@@ -669,7 +669,7 @@ console.log("dynamic_is_started = ", dynamic_is_started);
                   let params_with_canceled_bid_price = {
                     nonce: Date.now().toString(),
                     pair_id: pair_id,
-                    order_direction: "ask",
+                    order_direction: "sell",
                     order_type: "limit",
                     price: highest_bid_price,
                     amount_1: askAmount.toString(),
