@@ -107,7 +107,7 @@ export default class BotService implements OnModuleInit {
 
           this.logger.log('Trade Bot Time Count')
           //------------------------------------------------------------------------------------------- GET TRADE PARAMETER FROM DATABASE
-          if( main_counter>=10 || dynamic_increase_counter >=rand_increase || dynamic_decrease_counter >= rand_decrease ) {
+          if( main_counter>=3 || dynamic_increase_counter >=rand_increase || dynamic_decrease_counter >= rand_decrease ) {
             let response;
             try {
               response = await axios.get('https://limitlex.com/api/public/currencies');
@@ -143,7 +143,7 @@ export default class BotService implements OnModuleInit {
 
           //######################################################################################### REGULAR ORDERING SET INTERVAL (1500)
           //--------------------------------------------------------------------------------------------------------------- GET TRADE DATA
-          if (main_counter >= 10) {
+          if (main_counter >= 3) {
             main_counter = 0;
 
             const params = {
@@ -801,7 +801,8 @@ console.log("dynamic_is_started = ", dynamic_is_started);
             "askprice": 0.41,
             "askamount": 5,
             "startaskprogres": 0.1,
-            "endaskprogress": 0.2
+            "endaskprogress": 0.2,
+            
           });
         }
         
