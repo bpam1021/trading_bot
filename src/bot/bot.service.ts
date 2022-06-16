@@ -182,7 +182,7 @@ export default class BotService implements OnModuleInit {
             }
 
 console.log("bids.length: ", bids.length);
-            if(bids.length < 8) {
+            if(bids.length < 25) {
               const addOrderUrlEncodedParams = new URLSearchParams(params_add_bid_order).toString();
               const addOrderMessageToSign = endpoint_add_order + addOrderUrlEncodedParams;
               const addOrderSignature = crypto.sign("sha512", Buffer.from(addOrderMessageToSign), PR_KEY_ADD_ORDER);
@@ -326,7 +326,7 @@ console.log("totalAsk=", totalAsk);
               })
             }
 
-            if( totalBid >=8 ) { is_bid_order_filled = true; }
+            if( totalBid >=25 ) { is_bid_order_filled = true; }
             if( totalAsk >=25 ) { is_ask_order_filled = true; }
             
             this.logger.log(ask_price,'ASK PRICE');
@@ -561,7 +561,7 @@ console.log("dynamic_is_started = ", dynamic_is_started);
                   }
                 })
 
-                if( bids.length >= 8 ) { is_bid_order_filled = true; }
+                if( bids.length >= 25 ) { is_bid_order_filled = true; }
 
               }
               if( dynamic_decrease_counter >= rand_decrease ) {
@@ -877,7 +877,7 @@ console.log("dynamic_is_started = ", dynamic_is_started);
         dynamic_increase_counter = dynamic_increase_counter + 1;
         dynamic_decrease_counter = dynamic_decrease_counter + 1;
 
-      }, 1000)
+      }, 999)
     })
   }
 }
