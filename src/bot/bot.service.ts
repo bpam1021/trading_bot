@@ -97,8 +97,8 @@ export default class BotService implements OnModuleInit {
         
         //------------------------------------------------------------------------------------------------------------ GET TRADING STATUS
         if (tradeparameter!=false) {
-          
-          dynamic_is_started = firsttradeparameter.startflag;
+
+          dynamic_is_started = tradeparameter.startflag;
 
           this.logger.log('Trade Bot Time Count')
           //------------------------------------------------------------------------------------------- GET TRADE PARAMETER FROM DATABASE
