@@ -306,7 +306,7 @@ console.log("totalAsk=", totalAsk);
               buy_price = parseFloat((bids[totalBid - 1].price * (1 - this.getRandom(tradeparameter.startbidprogres, tradeparameter.endbidprogress)/100)).toFixed(4));
               balanceJson.result.data.map((item: any) => {
                 if(item.currency_id == fromid) {
-                  let amount_available_bid = parseFloat(item.amount_available) * this.getRandom(2, 10)/100;
+                  let amount_available_bid = parseFloat(item.amount_available) * this.getRandom(2, 7)/100;
                   let temp = amount_available_bid/buy_price;
                   bidAmount = parseFloat(temp.toFixed(pair_data.decimals));
                 }
@@ -320,7 +320,7 @@ console.log("totalAsk=", totalAsk);
               ask_price = parseFloat((asks[totalAsk - 1].price * (1 + this.getRandom(tradeparameter.startaskprogres, tradeparameter.endaskprogress)/100)).toFixed(4));
               balanceJson.result.data.map((item: any) => {
                 if(item.currency_id == toid) {
-                  let amount_available_ask = parseFloat(item.amount_available) * this.getRandom(2, 10)/100;
+                  let amount_available_ask = parseFloat(item.amount_available) * this.getRandom(2, 7)/100;
                   askAmount = parseFloat(amount_available_ask.toFixed(pair_data.decimals));
                 }
               })
@@ -432,6 +432,8 @@ console.log("dynamic_is_started = ", dynamic_is_started);
                     price: lowest_ask_price,
                     amount_1: bidAmount.toString(),
                   };
+                  console.log("A NEW BID!!!!!");
+                  console.log(params_with_canceled_ask_price);
                   const addNewOrderUrlEncodedParams = new URLSearchParams(params_with_canceled_ask_price).toString();
                   const addNewOrderMessageToSign = endpoint_add_order + addNewOrderUrlEncodedParams;
                   const addNewOrderSignature = crypto.sign("sha512", Buffer.from(addNewOrderMessageToSign), PR_KEY_ADD_ORDER);
@@ -461,14 +463,17 @@ console.log("dynamic_is_started = ", dynamic_is_started);
                         highest_bid_amount = item.amount_initial;
                     }
                   });
-
+                  console.log("highest!!!!");
+                  console.log(highest_bid_price);
+                  console.log(highest_bid_amount);
                   // CANCEL ALL BID ORDERS
                   let params_cancel_bid_orders = {
                     nonce: Date.now().toString(),
                     pair_id: pair_id,
                     direction: "buy",
                   };
-        
+                  console.log("cancel all buy!!!!");
+                  console.log(params_cancel_bid_orders);
                   const cancelAllOrderUrlEncodedParams = new URLSearchParams(params_cancel_bid_orders).toString();
                   const cancelAllOrderMessageToSign = endpoint_cancel_orders + cancelAllOrderUrlEncodedParams;
                   const cancelAllOrderSignature = crypto.sign("sha512", Buffer.from(cancelAllOrderMessageToSign), PR_KEY_CANCEL_ALL_ORDERS);
@@ -481,6 +486,7 @@ console.log("dynamic_is_started = ", dynamic_is_started);
                     body: cancelAllOrderUrlEncodedParams, // Parameters in body of the request
                   });
                   const cancelAllOrderJson = await cancelAllOrderResponses.json();
+                  console.log(cancelAllOrderJson);
                   // console.log("cancelAllOrderJson: ",cancelAllOrderJson);
 
                   // ADD A NEW BID WITH HIGHEST PRICE AND AMOUNT
