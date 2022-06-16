@@ -99,6 +99,11 @@ export default class BotService implements OnModuleInit {
         if (tradeparameter!=false) {
 
           dynamic_is_started = tradeparameter.startflag;
+          SUFFICIENT_PRICE_RATE = firsttradeparameter.price_rate;
+          dynamic_start_progress = firsttradeparameter.stime;
+          dinamic_end_progress = firsttradeparameter.etime;
+          Y = firsttradeparameter.ytime;
+          dynamic_is_started = firsttradeparameter.startflag;
 
           this.logger.log('Trade Bot Time Count')
           //------------------------------------------------------------------------------------------- GET TRADE PARAMETER FROM DATABASE
