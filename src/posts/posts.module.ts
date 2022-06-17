@@ -3,10 +3,10 @@ import PostsController from './posts.controller';
 import PostsService from './posts.service';
 import Post from './post.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { SharesModule } from '../shares/shares.module';
+// import { SharesModule } from '../shares/shares.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Post]), SharesModule],
+  imports: [TypeOrmModule.forFeature([Post])],
   controllers: [PostsController],
   providers: [PostsService],
   exports: [PostsService],
