@@ -949,6 +949,7 @@ console.log("Highest bid_prices===================", highest_bid_price);
           
         }
 
+        
         main_counter = main_counter + 1;
         dynamic_increase_counter = dynamic_increase_counter + 1;
         dynamic_decrease_counter = dynamic_decrease_counter + 1;
