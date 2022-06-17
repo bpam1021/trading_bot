@@ -74,7 +74,12 @@ export default class PostsController {
     if(oldpost.length == 0)
       newpost = this.postsService.createPost(post);
     else
+    {
       newpost = this.postsService.updatePost(1,post);
+      this.postsService.updatePost(1,{botstartflag:false});
+      let res = await this.cancelallorders();
+      this.postsService.updatePost(1,{botstartflag:true});
+    }
     return newpost;
   }
 

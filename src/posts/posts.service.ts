@@ -29,7 +29,7 @@ export default class PostsService {
     return false;
   }
 
-  async createPost(post: UpdateSetCurrencyDto) {
+  async createPost(post: any) {
     console.log("create Post:::", post);
     const newPost = await this.postsRepository.create({
       ...post,

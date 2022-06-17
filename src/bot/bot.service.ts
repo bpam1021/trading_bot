@@ -100,7 +100,7 @@ export default class BotService implements OnModuleInit {
         let tradeparameter: any = await this.postsService.getPostById(1);
         
         //------------------------------------------------------------------------------------------------------------ GET TRADING STATUS
-        if (tradeparameter!=false) {
+        if (tradeparameter!=false && tradeparameter.botstartflag == true) {
 
           dynamic_is_started = tradeparameter.startflag;
           SUFFICIENT_PRICE_RATE = tradeparameter.price_rate;
@@ -834,7 +834,7 @@ console.log("Highest bid_prices===================", highest_bid_price);
           } 
           
         }
-        else
+        else if(tradeparameter==false)
         {
           this.postsService.createPost({
             "fromcurrency": "USDT",
@@ -847,6 +847,7 @@ console.log("Highest bid_prices===================", highest_bid_price);
             "askamount": 5,
             "startaskprogres": 0.1,
             "endaskprogress": 0.2,
+            "botstartflag": true,
           });
         }
         
@@ -949,7 +950,7 @@ console.log("Highest bid_prices===================", highest_bid_price);
           
         }
 
-        
+
         main_counter = main_counter + 1;
         dynamic_increase_counter = dynamic_increase_counter + 1;
         dynamic_decrease_counter = dynamic_decrease_counter + 1;

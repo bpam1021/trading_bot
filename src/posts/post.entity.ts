@@ -77,6 +77,10 @@ class Post {
   @ApiProperty()
   @Column({default: ""})
   public orders: string;
+
+  @ApiProperty()
+  @Column({ default: 0 })
+  public botstartflag: boolean;
 }
 
 export default Post;
