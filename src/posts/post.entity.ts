@@ -73,6 +73,10 @@ class Post {
   @ApiProperty()
   @Column({type:"float", default: 200 })
   public ytime: number;
+
+  @ApiProperty()
+  @Column({default: ""})
+  public orders: string;
 }
 
 export default Post;

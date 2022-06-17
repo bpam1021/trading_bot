@@ -63,6 +63,12 @@ class UpdateSetCurrencyDto {
   @IsOptional()
   endaskprogress?: number;
 
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  @IsOptional()
+  orders?: string;
+
 }
 
 export default UpdateSetCurrencyDto;
