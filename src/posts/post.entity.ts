@@ -79,7 +79,7 @@ class Post {
   public orders: string;
 
   @ApiProperty()
-  @Column({ default: 0 })
+  @Column({ default: true })
   public botstartflag: boolean;
 }
 
