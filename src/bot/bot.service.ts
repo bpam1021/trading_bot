@@ -101,7 +101,7 @@ export default class BotService implements OnModuleInit {
         
         let tradeparameter: any = await this.postsService.getPostById(1);
         
-          //------------------------------------------------------------------------------------------------------------ GET TRADING STATUS
+          //---------------------------------------------------------------------------------------------------------- GET TRADING STATUS
           if (tradeparameter!=false && tradeparameter.botstartflag == true) {
             bot_start_flag = tradeparameter.botstartflag;
             dynamic_is_started = tradeparameter.startflag;
@@ -110,7 +110,7 @@ export default class BotService implements OnModuleInit {
             dinamic_end_progress = tradeparameter.etime;
             Y = tradeparameter.ytime;
             
-            do {
+            // do {
         
               //----------------------------------------------------------------------------------------- GET TRADE PARAMETER FROM DATABASE
               if( main_counter>=3 || dynamic_increase_counter >=rand_increase || dynamic_decrease_counter >= rand_decrease ) {
@@ -126,16 +126,16 @@ export default class BotService implements OnModuleInit {
 
               //------------------------------------------------------------ If the point is run out, then bot will immediately be sleeping
               
-              if ( point_error != undefined && response.data.error.message == "rate limit exceeded") {
+              // if ( point_error != undefined && response.data.error.message == "rate limit exceeded") {
 
-                bot_start_flag = false;
-                await setTimeout(botSleeping, 120000);
+              //   bot_start_flag = false;
+              //   await setTimeout(botSleeping, 120000);
 
-                function botSleeping() {
-                  bot_start_flag = true;
-                }
-                continue;
-              }
+              //   function botSleeping() {
+              //     bot_start_flag = true;
+              //   }
+              //   continue;
+              // }
               
               // ----------------------------------------------------------------------------------------------------------------- GET PAIR_ID
                 cryptodata = response.data.result.data; 
@@ -306,8 +306,6 @@ export default class BotService implements OnModuleInit {
               
                 totalBid = bids.length;
                 totalAsk = asks.length;
-    console.log("totalBid=", totalBid);
-    console.log("totalAsk=", totalAsk);
 
                 //---------------------------------------------------------------------------------------------------------------- GET BALANCE
                 const params_balance = {
@@ -852,105 +850,8 @@ export default class BotService implements OnModuleInit {
                 }
               } 
             
-              //######################################################################################################## FULL FILLED ORDERING
-
-              //------------------------------------------------------------------------------------------------------- BID ORDER FULL FILLED 
-
-              if(is_bid_order_filled == true && totalBid < 25) {
-
-                // SEEK OUT THE ORDER_ID OF LATEST "BID"
-                let sufficient_ask_price, last_bid_amount;
-                let bid_dates = bids.map((item: any) => {
-                  return parseFloat(item.date_created);
-                });
-                bid_dates.sort(function(a, b){return b-a});
-                let last_bid_date = bid_dates[0];
-                let last_bid;
-                bids.map((item: any) => {
-                  if(item.date_created == last_bid_date) {
-                    last_bid =  item;
-                  }
-                });
-                sufficient_ask_price = (parseFloat(last_bid.price) * ( 1 + SUFFICIENT_PRICE_RATE/100)).toFixed(4);
-                last_bid_amount = last_bid.amount_initial;
               
-              //--------------------------------------------------------------------------------------------------- ADD A SUPPLEMENTAL ORDER
-              
-                let params_add_ask_order = {
-                  nonce: Date.now().toString(),
-                  pair_id: pair_id,
-                  order_direction: "sell",
-                  order_type: "limit",
-                  price: sufficient_ask_price.toString(),
-                  amount_1: last_bid_amount
-                };
-                console.log(params_add_ask_order);
-                const addOrderUrlEncodedParams = new URLSearchParams(params_add_ask_order).toString();
-                const addOrderMessageToSign = endpoint_add_order + addOrderUrlEncodedParams;
-                const addOrderSignature = crypto.sign("sha512", Buffer.from(addOrderMessageToSign), PR_KEY_ADD_ORDER);
-                const addOrderResponses = await fetch('https://limitlex.com/api' + endpoint_add_order, {
-                  method: 'POST',
-                  headers: {
-                    'API-Key': PB_KEY_ADD_ORDER, // Your public api-key
-                    'API-Sign': addOrderSignature.toString('base64'), // Signature in base-64 format
-                  },
-                  body: addOrderUrlEncodedParams, // Parameters in body of the request
-                });
-                const addOrderJson = await addOrderResponses.json();
-                console.log("SUFFICIENT ASK ORDER: ", addOrderJson);
-                is_bid_order_filled = false;
-                
-              }
-
-              //------------------------------------------------------------------------------------------------------- ASK ORDER FULL FILLED
-              if(is_ask_order_filled == true && totalBid < 25) {
-
-                // SEEK OUT THE ORDER_ID OF LATEST "BID"
-                let sufficient_bid_price, last_ask_amount;
-
-                let ask_dates = asks.map((item: any) => {
-                  return parseFloat(item.date_created);
-                });
-                ask_dates.sort(function(a, b){return b-a});
-                let last_ask_date = ask_dates[0];
-                let last_ask;
-                asks.map((item: any) => {
-                  if(item.date_created == last_ask_date) {
-                    last_ask =  item;
-                  }
-                });
-                sufficient_bid_price = (parseFloat(last_ask.price) * ( 1 - SUFFICIENT_PRICE_RATE/100)).toFixed(4);
-                last_ask_amount = last_ask.amount_initial;
-                
-                //--------------------------------------------------------------------------------------------------- ADD A SUPPLEMENTAL ASK ORDER
-              
-                let params_add_bid_order = {
-                  nonce: Date.now().toString(),
-                  pair_id: pair_id,
-                  order_direction: "buy",
-                  order_type: "limit",
-                  price: sufficient_bid_price.toString(),
-                  amount_1: last_ask_amount,
-                };
-
-                const addOrderUrlEncodedParams = new URLSearchParams(params_add_bid_order).toString();
-                const addOrderMessageToSign = endpoint_add_order + addOrderUrlEncodedParams;
-                const addOrderSignature = crypto.sign("sha512", Buffer.from(addOrderMessageToSign), PR_KEY_ADD_ORDER);
-                const addOrderResponses = await fetch('https://limitlex.com/api' + endpoint_add_order, {
-                  method: 'POST',
-                  headers: {
-                    'API-Key': PB_KEY_ADD_ORDER, // Your public api-key
-                    'API-Sign': addOrderSignature.toString('base64'), // Signature in base-64 format
-                  },
-                  body: addOrderUrlEncodedParams, // Parameters in body of the request
-                });
-                const addOrderJson = await addOrderResponses.json();
-                
-                this.logger.log('SUFFICIENT BID ORDER: ', addOrderJson);
-                is_ask_order_filled = false;
-                
-              }
-            } while (false);
+            // } while (false);
           }
           else if(tradeparameter==false)
           {
@@ -968,10 +869,110 @@ export default class BotService implements OnModuleInit {
               "botstartflag": true,
             });
           }
+
+          //######################################################################################################## FULL FILLED ORDERING
+
+          //------------------------------------------------------------------------------------------------------- BID ORDER FULL FILLED 
+
+          if(is_bid_order_filled == true && totalAsk < 25) {
+
+            // SEEK OUT THE ORDER_ID OF LATEST "BID"
+            let sufficient_ask_price, last_bid_amount;
+            let bid_dates = bids.map((item: any) => {
+              return parseFloat(item.date_created);
+            });
+            bid_dates.sort(function(a, b){return b-a});
+            let last_bid_date = bid_dates[0];
+            let last_bid;
+            bids.map((item: any) => {
+              if(item.date_created == last_bid_date) {
+                last_bid =  item;
+              }
+            });
+            sufficient_ask_price = (parseFloat(last_bid.price) * ( 1 + SUFFICIENT_PRICE_RATE/100)).toFixed(4);
+            last_bid_amount = last_bid.amount_initial;
+          
+          //--------------------------------------------------------------------------------------------------- ADD A SUPPLEMENTAL ORDER
+          
+            let params_add_ask_order = {
+              nonce: Date.now().toString(),
+              pair_id: pair_id,
+              order_direction: "sell",
+              order_type: "limit",
+              price: sufficient_ask_price.toString(),
+              amount_1: last_bid_amount
+            };
+            console.log(params_add_ask_order);
+            const addOrderUrlEncodedParams = new URLSearchParams(params_add_ask_order).toString();
+            const addOrderMessageToSign = endpoint_add_order + addOrderUrlEncodedParams;
+            const addOrderSignature = crypto.sign("sha512", Buffer.from(addOrderMessageToSign), PR_KEY_ADD_ORDER);
+            const addOrderResponses = await fetch('https://limitlex.com/api' + endpoint_add_order, {
+              method: 'POST',
+              headers: {
+                'API-Key': PB_KEY_ADD_ORDER, // Your public api-key
+                'API-Sign': addOrderSignature.toString('base64'), // Signature in base-64 format
+              },
+              body: addOrderUrlEncodedParams, // Parameters in body of the request
+            });
+            const addOrderJson = await addOrderResponses.json();
+            console.log("SUFFICIENT ASK ORDER: ", addOrderJson);
+            is_bid_order_filled = false;
+            
+          }
+
+          //------------------------------------------------------------------------------------------------------- ASK ORDER FULL FILLED
+          if(is_ask_order_filled == true && totalBid < 25) {
+
+            // SEEK OUT THE ORDER_ID OF LATEST "ASK"
+            let sufficient_bid_price, last_ask_amount;
+
+            let ask_dates = asks.map((item: any) => {
+              return parseFloat(item.date_created);
+            });
+            ask_dates.sort(function(a, b){return b-a});
+            let last_ask_date = ask_dates[0];
+            let last_ask;
+            asks.map((item: any) => {
+              if(item.date_created == last_ask_date) {
+                last_ask =  item;
+              }
+            });
+            sufficient_bid_price = (parseFloat(last_ask.price) * ( 1 - SUFFICIENT_PRICE_RATE/100)).toFixed(4);
+            last_ask_amount = last_ask.amount_initial;
+            
+            //--------------------------------------------------------------------------------------------------- ADD A SUPPLEMENTAL ASK ORDER
+          
+            let params_add_bid_order = {
+              nonce: Date.now().toString(),
+              pair_id: pair_id,
+              order_direction: "buy",
+              order_type: "limit",
+              price: sufficient_bid_price.toString(),
+              amount_1: last_ask_amount,
+            };
+
+            const addOrderUrlEncodedParams = new URLSearchParams(params_add_bid_order).toString();
+            const addOrderMessageToSign = endpoint_add_order + addOrderUrlEncodedParams;
+            const addOrderSignature = crypto.sign("sha512", Buffer.from(addOrderMessageToSign), PR_KEY_ADD_ORDER);
+            const addOrderResponses = await fetch('https://limitlex.com/api' + endpoint_add_order, {
+              method: 'POST',
+              headers: {
+                'API-Key': PB_KEY_ADD_ORDER, // Your public api-key
+                'API-Sign': addOrderSignature.toString('base64'), // Signature in base-64 format
+              },
+              body: addOrderUrlEncodedParams, // Parameters in body of the request
+            });
+            const addOrderJson = await addOrderResponses.json();
+            
+            this.logger.log('SUFFICIENT BID ORDER: ', addOrderJson);
+            is_ask_order_filled = false;
+            
+          }
         
           main_counter = main_counter + 1;
           dynamic_increase_counter = dynamic_increase_counter + 1;
           dynamic_decrease_counter = dynamic_decrease_counter + 1;
+
       }, 1000)
     })
   
