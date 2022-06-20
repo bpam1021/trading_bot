@@ -16,6 +16,7 @@ import fs from 'fs'
 import fetch from 'node-fetch';
 import PostsService from "./posts.service";
 import CreatePostDto from "./dto/createPost.dto";
+import UpdateSetBotStartParamDto from "./dto/updateSetBotStartParam.dto";
 import UpdateSetAskParamDto from "./dto/updateSetAskParam.dto";
 import UpdateSetBidParamDto from "./dto/updateSetBidParam.dto";
 import UpdateSetRangeParamDto from "./dto/updateSetRangeParam.dto";
@@ -110,6 +111,13 @@ export default class PostsController {
   @ApiOperation({ summary: "Set Start Flag" })
   async setStartandStop(@Body() startdata: UpdateSetStartParamDto){
     return this.postsService.updatePost(1,startdata);
+  }
+
+  @Post("botAction")
+  // @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: "Set Bot Start Flag" })
+  async setBotStartandStop(@Body() botstartdata: UpdateSetBotStartParamDto){
+    return this.postsService.updatePost(1, botstartdata);
   }
 
   @Post("curryencies")

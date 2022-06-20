@@ -75,12 +75,13 @@ class Post {
   public ytime: number;
 
   @ApiProperty()
+  @Column({ default: true })
+  public botstartflag: boolean;
+
+  @ApiProperty()
   @Column({default: ""})
   public orders: string;
 
-  @ApiProperty()
-  @Column({ default: true })
-  public botstartflag: boolean;
 }
 
 export default Post;
